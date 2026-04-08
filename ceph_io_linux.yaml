@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: linux-fio-benchmark
+  # This namespace and PVC match the user's `linuxNFS.yaml` environment for deploying Ceph
+  namespace: proj-name
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: linux-fio
+        image: ubuntu:22.04
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            echo "Installing fio..."
+            apt-get update && apt-get install -y fio
+            
+            TARGET_DIR="/proj/proj-name"
+            echo "=== FIO Native Ceph Storage Benchmark ==="
+            cd "$TARGET_DIR"
+            
+            echo "--- 1. Sequential Write Test (Simulating Checkpoint Save) ---"
+            fio --name=seqwrite --ioengine=posixaio --rw=write --bs=1M --size=2G --numjobs=1 --iodepth=16 --directory="$TARGET_DIR"
+            
+            echo "--- 2. Sequential Read Test (Simulating Model Load) ---"
+            fio --name=seqread --ioengine=posixaio --rw=read --bs=1M --size=2G --numjobs=1 --iodepth=16 --directory="$TARGET_DIR"
+            
+            echo "--- 3. Random Read Test (Simulating Dataset Dataloader) ---"
+            fio --name=randread --ioengine=posixaio --rw=randread --bs=4k --size=1G --numjobs=4 --iodepth=32 --directory="$TARGET_DIR"
+            
+            # Cleanup
+            rm -f "$TARGET_DIR"/seqwrite* "$TARGET_DIR"/seqread* "$TARGET_DIR"/randread*
+            
+            echo "=== FIO Benchmark Completed ==="
+        volumeMounts:
+        - name: project-storage
+          mountPath: /proj/proj-name
+      volumes:
+      - name: project-storage
+        persistentVolumeClaim:
+          claimName: csi-cephfs-proj-name

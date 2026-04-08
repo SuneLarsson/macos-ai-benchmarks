@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: linux-ai-pytorch-baseline
+  namespace: proj-name
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: linux-ai
+        # Use the custom pre-built image from benchmarks/Dockerfile.linux
+        # Replace <your-registry> with your actual Docker registry (e.g. ghcr.io, docker.io)
+        image: <your-registry>/linux-ai-baseline:latest
+        imagePullPolicy: Always
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            TARGET_DIR="/proj/proj-name"
+            SCRIPT_DIR="$TARGET_DIR/benchmark_scripts"
+            
+            # Make the unified runner executable and run it
+            chmod +x "$SCRIPT_DIR/run_ai_suite.sh"
+            bash "$SCRIPT_DIR/run_ai_suite.sh"
+        volumeMounts:
+        - name: project-storage
+          mountPath: /proj/proj-name
+      volumes:
+      - name: project-storage
+        persistentVolumeClaim:
+          claimName: csi-cephfs-proj-name

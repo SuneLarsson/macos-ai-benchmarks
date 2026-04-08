@@ -1,0 +1,12 @@
+# Start from the official PyTorch image for complete CUDA support out-of-the-box
+FROM pytorch/pytorch:latest
+
+# Install Git so the benchmarking script can automatically clone latest TristanBilot/mlx-benchmark
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install MLX (which officially supports CUDA natively on Linux) and HuggingFace LLM inference layers
+RUN pip install --no-cache-dir mlx transformers accelerate mlx-lm
+
+# Note: numpy and torch are already provided by the pytorch base image.

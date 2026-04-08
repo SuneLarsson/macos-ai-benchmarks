@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: macos-ai-benchmark
+  # Ensure the namespace matches your test environment
+  namespace: default
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      annotations:
+        # Match your NFS service name and path
+        macos-exec-kubelet/nfs-service: "macos-nfs-service"
+        macos-exec-kubelet/nfs-mount-path: "/data/shared"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: macos-ai
+        image: placeholder
+        command:
+          - "/bin/zsh"
+          - "-c"
+          - |
+            NFS_DIR="/private/tmp/default"
+            SCRIPT_DIR="$NFS_DIR/benchmark_scripts"
+            
+            # Make the unified runner executable and run it
+            chmod +x "$SCRIPT_DIR/run_ai_suite.sh"
+            bash "$SCRIPT_DIR/run_ai_suite.sh"
+      tolerations:
+      - key: "virtual-kubelet.io/provider"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/os: "darwin"
