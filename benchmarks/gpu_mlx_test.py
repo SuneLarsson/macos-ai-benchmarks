@@ -20,11 +20,12 @@ def benchmark_gpu(iterations=1000, seed=42, prefix="", output_dir="results"):
     
     size = 4096
     print(f"Generating {size}x{size} matrices on {mx.default_device()} natively in MLX...")
+    # Warmup
+    mx.random.seed(seed)
     A = mx.random.uniform(shape=(size, size))
     B = mx.random.uniform(shape=(size, size))
-    
     C = mx.matmul(A, B)
-    mx.eval(C) # Warmup
+    mx.eval(C)
     
     print(f"Running {iterations} iterations of matrix multiplication...")
     
@@ -56,6 +57,12 @@ def benchmark_gpu(iterations=1000, seed=42, prefix="", output_dir="results"):
     times = []
     try:
         for i in range(iterations):
+            current_seed = seed + i
+            mx.random.seed(current_seed)
+            A = mx.random.uniform(shape=(size, size))
+            B = mx.random.uniform(shape=(size, size))
+            mx.eval(A, B) # ensure generation is complete BEFORE starting timing!
+
             start = time.perf_counter()
             C = mx.matmul(A, B)
             mx.eval(C)

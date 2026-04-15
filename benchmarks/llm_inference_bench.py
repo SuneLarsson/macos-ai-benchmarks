@@ -27,9 +27,8 @@ MODELS = [
     "mlx-community/Mistral-7B-Instruct-v0.3-4bit"
 ]
 
-def benchmark_inference(seed=42, prefix="", output_dir="results"):
-    mx.random.seed(seed)
-    print(f"Starting MLX-LM Inference Benchmark (Paper Replication) with seed {seed}...")
+def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
+    print(f"Starting MLX-LM Inference Benchmark (Paper Replication) with base seed {seed}...")
     
     prompt = "Write a comprehensive 500 word essay on the history of computers:"
     
@@ -62,53 +61,64 @@ def benchmark_inference(seed=42, prefix="", output_dir="results"):
             pass
         mx.eval(model.parameters()) # ensure synchronization
         
-        print("Executing benchmark generation (max 256 tokens) to compute TPS and TTFT...")
-        first_token_time = None
-        tokens_generated = 0
-        
-        start_gen = time.perf_counter()
-        
-        # Iterate generation step natively to accurately timestamp First Token
-        for token, _ in generate_step(prompt_tokens, model):
-            # mx.eval forces the async graph execution to resolve so we get exact timing
-            mx.eval(token) 
+        all_stats = []
+        for i in range(iterations):
+            current_seed = seed + i
+            mx.random.seed(current_seed)
+            print(f"Executing benchmark generation {i+1}/{iterations} (seed {current_seed}, max 256 tokens)...")
             
-            if first_token_time is None:
-                first_token_time = time.perf_counter() - start_gen
+            first_token_time = None
+            tokens_generated = 0
+            
+            start_gen = time.perf_counter()
+            
+            # Iterate generation step natively to accurately timestamp First Token
+            for token, _ in generate_step(prompt_tokens, model):
+                # mx.eval forces the async graph execution to resolve so we get exact timing
+                mx.eval(token) 
                 
-            tokens_generated += 1
-            if tokens_generated >= 256:
-                break
-                
-        total_time = time.perf_counter() - start_gen
-        
-        tps = tokens_generated / total_time
-        ttft = first_token_time if first_token_time else total_time
-        
-        stats = {
-            "benchmark": "LLM Inference (MLX-LM)",
-            "model": model_id,
-            "load_time_s": float(load_time),
-            "time_to_first_token_s": float(ttft),
-            "total_generation_time_s": float(total_time),
-            "tokens_generated": int(tokens_generated),
-            "tokens_per_second": float(tps)
-        }
-        
-        print(f"--- Results for {model_id} ---")
-        for k, v in stats.items():
-            if isinstance(v, float):
-                print(f"{k}: {v:.4f}")
-            else:
-                print(f"{k}: {v}")
-                
+                if first_token_time is None:
+                    first_token_time = time.perf_counter() - start_gen
+                    
+                tokens_generated += 1
+                if tokens_generated >= 256:
+                    break
+                    
+            total_time = time.perf_counter() - start_gen
+            
+            tps = tokens_generated / total_time
+            ttft = first_token_time if first_token_time else total_time
+            
+            stats = {
+                "iteration": i + 1,
+                "seed": current_seed,
+                "time_to_first_token_s": float(ttft),
+                "total_generation_time_s": float(total_time),
+                "tokens_generated": int(tokens_generated),
+                "tokens_per_second": float(tps)
+            }
+            all_stats.append(stats)
+            
+            print(f"--- Iteration {i+1} Results ---")
+            for k, v in stats.items():
+                if isinstance(v, float):
+                    print(f"{k}: {v:.4f}")
+                else:
+                    print(f"{k}: {v}")
+                    
         os.makedirs(output_dir, exist_ok=True)
         filename_prefix = f"{prefix}_" if prefix else ""
         safe_model_name = model_id.split("/")[-1]
-        filename = f"{output_dir}/{filename_prefix}llm_stats_{safe_model_name}_{int(time.time())}.json"
+        filename = f"{output_dir}/{filename_prefix}llm_stats_{safe_model_name}.json"
         
         with open(filename, "w") as f:
-            json.dump(stats, f, indent=4)
+            json.dump({
+                "benchmark": "LLM Inference (MLX-LM)",
+                "model": model_id,
+                "load_time_s": float(load_time),
+                "target_iterations": iterations,
+                "runs": all_stats
+            }, f, indent=4)
             
         print(f"Results saved to {filename}")
 
@@ -124,5 +134,6 @@ if __name__ == "__main__":
         signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(args.timeout)
 
-    for _ in range(args.runs):
-        benchmark_inference(seed=args.seed, output_dir=args.output_dir)
+    target_runs = max(1, args.runs // 5)
+    print(f"LLM Bench: Adjusted target runs from {args.runs} to {target_runs}")
+    benchmark_inference(iterations=target_runs, seed=args.seed, output_dir=args.output_dir)

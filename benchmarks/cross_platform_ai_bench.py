@@ -33,10 +33,10 @@ def benchmark_cross_platform(iterations=1000, seed=42, prefix="", output_dir="re
     size = 4096
     print(f"Generating {size}x{size} matrices natively on {device}... ")
     
+    # Warmup
+    torch.manual_seed(seed)
     A = torch.rand(size, size, device=device, dtype=torch.float32)
     B = torch.rand(size, size, device=device, dtype=torch.float32)
-    
-    # Warmup
     C = torch.matmul(A, B)
     if device.type == 'cuda':
         torch.cuda.synchronize()
@@ -73,6 +73,11 @@ def benchmark_cross_platform(iterations=1000, seed=42, prefix="", output_dir="re
     times = []
     try:
         for i in range(iterations):
+            current_seed = seed + i
+            torch.manual_seed(current_seed)
+            A = torch.rand(size, size, device=device, dtype=torch.float32)
+            B = torch.rand(size, size, device=device, dtype=torch.float32)
+
             start = time.perf_counter()
             
             C = torch.matmul(A, B)

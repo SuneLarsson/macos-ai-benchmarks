@@ -14,11 +14,11 @@ def benchmark_cpu(iterations=1000, seed=42, prefix="", output_dir="results"):
     np.random.seed(seed)
     print("Starting CPU baseline benchmark...")
     size = 4096
-    print(f"Generating {size}x{size} matrices...")
+    # Warmup
+    np.random.seed(seed)
     A = np.random.rand(size, size).astype(np.float32)
     B = np.random.rand(size, size).astype(np.float32)
-    
-    _ = np.dot(A, B) # Warmup
+    _ = np.dot(A, B)
     
     print(f"Running {iterations} iterations of matrix multiplication...")
     
@@ -50,6 +50,11 @@ def benchmark_cpu(iterations=1000, seed=42, prefix="", output_dir="results"):
     times = []
     try:
         for i in range(iterations):
+            current_seed = seed + i
+            np.random.seed(current_seed)
+            A = np.random.rand(size, size).astype(np.float32)
+            B = np.random.rand(size, size).astype(np.float32)
+
             start = time.perf_counter()
             _ = np.dot(A, B)
             times.append(time.perf_counter() - start)

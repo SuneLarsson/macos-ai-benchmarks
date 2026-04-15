@@ -35,9 +35,10 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
     
     print(f"Loading model with ComputeUnit = {name}...")
     loaded_model = ct.models.MLModel('/tmp/dummy_model.mlpackage', compute_units=compute_unit)
+    # Warmup
+    np.random.seed(seed)
     dummy_input = {'input': np.random.rand(2048).astype(np.float32)}
-    
-    _ = loaded_model.predict(dummy_input) # Warmup
+    _ = loaded_model.predict(dummy_input)
     
     print(f"Running {iterations} iterations...")
     
@@ -68,6 +69,10 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
     times = []
     try:
         for i in range(iterations):
+            current_seed = seed + i
+            np.random.seed(current_seed)
+            dummy_input = {'input': np.random.rand(2048).astype(np.float32)}
+
             start = time.perf_counter()
             _ = loaded_model.predict(dummy_input)
             times.append(time.perf_counter() - start)
