@@ -36,21 +36,34 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# Override HuggingFace cache to always map to the local execution environment's incredibly fast /tmp storage!
+# We intentionally avoid $SCRIPT_DIR (Ceph/NFS) because network-attached storage is notoriously slow for 
+# streaming huge multi-gigabyte model weights directly into unified memory, and NFS POSIX filelocks
+# frequently deadlock macOS clients independently.
+export HF_HOME="/tmp/ai_bench_hf_cache"
+mkdir -p "$HF_HOME"
+
 OS_NAME=$(uname -s)
 
 if [ "$OS_NAME" = "Darwin" ]; then
     echo "--- Detected macOS Worker ---"
     
-    # Step out of benchmark_scripts to create the venv directly on the NFS root
-    cd ..
-    echo "Setting up Python virtual environment..."
-    python3 -m venv venv
-    source venv/bin/activate
+    # Create the venv in a unique /private/tmp directory to avoid NFS locking and concurrent run collisions
+    VENV_DIR=$(mktemp -d -t ai_bench_venv)
+    echo "Setting up Python virtual environment in $VENV_DIR..."
+    trap 'echo "Cleaning up $VENV_DIR..."; rm -rf "$VENV_DIR"' EXIT
+    
+    if ! python3 -m venv "$VENV_DIR"; then
+        echo "venv creation failed. Attempting with --without-pip..."
+        python3 -m venv --without-pip "$VENV_DIR"
+        source "$VENV_DIR/bin/activate"
+        curl -sS https://bootstrap.pypa.io/get-pip.py | python3
+    else
+        source "$VENV_DIR/bin/activate"
+    fi
     
     echo "Installing dependencies (may take a minute for coremltools)..."
-    pip install numpy mlx coremltools torch transformers accelerate mlx-lm
-    
-    cd "$SCRIPT_DIR"
+    pip install numpy mlx coremltools torch torchvision transformers accelerate mlx-lm "urllib3<2"
     
     echo "=================================="
     echo "--- Running CPU Baseline ---"
@@ -79,11 +92,14 @@ if [ "$OS_NAME" = "Darwin" ]; then
     
     echo "=================================="
     echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
+    cd "$VENV_DIR"
     if [ ! -d "mlx-benchmark" ]; then
         git clone https://github.com/TristanBilot/mlx-benchmark.git
     fi
     cd mlx-benchmark
-    pip install -r requirements.txt
+    pip install -r requirements.txt torchvision
+    
+    cd mlx_benchmark
     python3 run_benchmark.py --include_mps=True --include_mlx_gpu=True --include_mlx_cpu=False --include_cpu=False
     cd "$SCRIPT_DIR"
     
@@ -104,12 +120,17 @@ elif [ "$OS_NAME" = "Linux" ]; then
     
     echo "=================================="
     echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
+    # Clone to a safe localized tmp directory to avoid bare-metal Ceph concurrent locking natively
+    WORK_DIR=$(mktemp -d)
+    cd "$WORK_DIR"
+    
     if [ ! -d "mlx-benchmark" ]; then
         git clone https://github.com/TristanBilot/mlx-benchmark.git
     fi
     cd mlx-benchmark
-    pip install -r requirements.txt
+    pip install -r requirements.txt torchvision
     
+    cd mlx_benchmark
     # Using mlx_gpu on linux maps to CUDA MLX
     python3 run_benchmark.py --include_mps=False --include_mlx_gpu=True --include_mlx_cpu=False --include_cuda=True --include_cpu=False
     cd "$SCRIPT_DIR"
