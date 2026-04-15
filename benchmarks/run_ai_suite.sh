@@ -16,6 +16,10 @@ while [[ $# -gt 0 ]]; do
       BENCH_ARGS="$BENCH_ARGS --seed $2"
       shift 2
       ;;
+    --output-dir)
+      BENCH_ARGS="$BENCH_ARGS --output-dir $2"
+      shift 2
+      ;;
     *)
       echo "Unknown argument: $1"
       exit 1

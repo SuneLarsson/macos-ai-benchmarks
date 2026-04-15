@@ -27,7 +27,7 @@ def create_dummy_model():
     mlmodel = ct.models.MLModel(builder.spec)
     return mlmodel
 
-def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.ComputeUnit.ALL, name="ALL"):
+def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir="results"):
     np.random.seed(seed)
     print(f"\n--- Starting CoreML validation benchmark (ComputeUnit: {name}) ---")
     model = create_dummy_model()
@@ -41,9 +41,9 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
     
     print(f"Running {iterations} iterations...")
     
-    os.makedirs("results", exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     filename_prefix = f"{prefix}_" if prefix else ""
-    filename = f"results/{filename_prefix}coreml_stats_{name}_{int(time.time())}.json"
+    filename = f"{output_dir}/{filename_prefix}coreml_stats_{name}_{int(time.time())}.json"
     
     def save_results(current_times):
         if not current_times: return
@@ -85,6 +85,7 @@ if __name__ == "__main__":
     parser.add_argument('--runs', type=int, default=1000, help='Number of iterations')
     parser.add_argument('--timeout', type=int, default=0, help='Timeout in seconds')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    parser.add_argument('--output-dir', type=str, default='results', help='Directory to save results')
     args = parser.parse_args()
 
     if args.timeout > 0:
@@ -92,8 +93,8 @@ if __name__ == "__main__":
         signal.alarm(args.timeout)
 
     # Run explicitly on CPU to establish a CoreML baseline
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_ONLY, name="CPU_ONLY")
+    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_ONLY, name="CPU_ONLY", output_dir=args.output_dir)
     # Run with CPU AND GPU to track GPU performance impact within CoreML
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_AND_GPU, name="CPU_AND_GPU")
+    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_AND_GPU, name="CPU_AND_GPU", output_dir=args.output_dir)
     # Run with ALL (Which forces ANE if available)
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.ALL, name="ALL")
+    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir=args.output_dir)

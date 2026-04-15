@@ -61,6 +61,7 @@ def main():
     parser.add_argument('--runs', type=int, default=50, help='Number of iterations (epochs)')
     parser.add_argument('--timeout', type=int, default=0, help='Timeout in seconds')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    parser.add_argument('--output-dir', type=str, default='results', help='Directory to save results')
     args = parser.parse_args()
 
     if args.timeout > 0:
@@ -112,8 +113,8 @@ def main():
         else:
             print(f"{k}: {v}")
         
-    os.makedirs("results", exist_ok=True)
-    filename = f"results/nfs_data_bench_{args.mode}_{int(time.time())}.json"
+    os.makedirs(args.output_dir, exist_ok=True)
+    filename = f"{args.output_dir}/nfs_data_bench_{args.mode}_{int(time.time())}.json"
     with open(filename, "w") as f:
         json.dump(stats, f, indent=4)
     print(f"Results saved to {filename}")

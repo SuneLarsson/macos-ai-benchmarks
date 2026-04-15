@@ -6,7 +6,12 @@ import signal
 import sys
 import mlx.core as mx
 from mlx_lm import load
-from mlx_lm.utils import generate_step
+try:
+    # In newer versions of mlx_lm, generate_step was moved to mlx_lm.generate
+    from mlx_lm.generate import generate_step
+except ImportError:
+    # Fallback for older versions of mlx_lm
+    from mlx_lm.utils import generate_step
 
 def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
@@ -22,7 +27,7 @@ MODELS = [
     "mlx-community/Mistral-7B-Instruct-v0.3-4bit"
 ]
 
-def benchmark_inference(seed=42, prefix=""):
+def benchmark_inference(seed=42, prefix="", output_dir="results"):
     mx.random.seed(seed)
     print(f"Starting MLX-LM Inference Benchmark (Paper Replication) with seed {seed}...")
     
@@ -97,10 +102,10 @@ def benchmark_inference(seed=42, prefix=""):
             else:
                 print(f"{k}: {v}")
                 
-        os.makedirs("results", exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
         filename_prefix = f"{prefix}_" if prefix else ""
         safe_model_name = model_id.split("/")[-1]
-        filename = f"results/{filename_prefix}llm_stats_{safe_model_name}_{int(time.time())}.json"
+        filename = f"{output_dir}/{filename_prefix}llm_stats_{safe_model_name}_{int(time.time())}.json"
         
         with open(filename, "w") as f:
             json.dump(stats, f, indent=4)
@@ -112,6 +117,7 @@ if __name__ == "__main__":
     parser.add_argument('--runs', type=int, default=1, help='Number of times to run the evaluation loop')
     parser.add_argument('--timeout', type=int, default=0, help='Timeout in seconds')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    parser.add_argument('--output-dir', type=str, default='results', help='Directory to save results')
     args = parser.parse_args()
 
     if args.timeout > 0:
@@ -119,4 +125,4 @@ if __name__ == "__main__":
         signal.alarm(args.timeout)
 
     for _ in range(args.runs):
-        benchmark_inference(seed=args.seed)
+        benchmark_inference(seed=args.seed, output_dir=args.output_dir)

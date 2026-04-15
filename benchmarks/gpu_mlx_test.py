@@ -11,7 +11,7 @@ def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
     sys.exit(124)
 
-def benchmark_gpu(iterations=1000, seed=42, prefix=""):
+def benchmark_gpu(iterations=1000, seed=42, prefix="", output_dir="results"):
     np.random.seed(seed)
     mx.random.seed(seed)
     print("Starting MLX GPU benchmark...")
@@ -28,9 +28,9 @@ def benchmark_gpu(iterations=1000, seed=42, prefix=""):
     
     print(f"Running {iterations} iterations of matrix multiplication...")
     
-    os.makedirs("results", exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     filename_prefix = f"{prefix}_" if prefix else ""
-    filename = f"results/{filename_prefix}gpu_stats_{int(time.time())}.json"
+    filename = f"{output_dir}/{filename_prefix}gpu_stats_{int(time.time())}.json"
     
     def save_results(current_times):
         if not current_times: return
@@ -74,10 +74,11 @@ if __name__ == "__main__":
     parser.add_argument('--runs', type=int, default=1000, help='Number of iterations')
     parser.add_argument('--timeout', type=int, default=0, help='Timeout in seconds')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    parser.add_argument('--output-dir', type=str, default='results', help='Directory to save results')
     args = parser.parse_args()
 
     if args.timeout > 0:
         signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(args.timeout)
 
-    benchmark_gpu(iterations=args.runs, seed=args.seed)
+    benchmark_gpu(iterations=args.runs, seed=args.seed, output_dir=args.output_dir)
