@@ -15,14 +15,15 @@ def timeout_handler(signum, frame):
 
 def create_dummy_model():
     # Create a simple neural network: an MLP with one hidden layer
-    # Size increased to 2048 to ensure ANE invocation (ANE ignores very tiny models due to overhead)
-    input_features = [('input', datatypes.Array(2048))]
-    output_features = [('output', datatypes.Array(2048))]
+    # Size increased to 8192 to ensure ANE invocation (ANE ignores very tiny models due to overhead)
+    # and to overcome the CoreML dispatch overhead.
+    input_features = [('input', datatypes.Array(8192))]
+    output_features = [('output', datatypes.Array(8192))]
     builder = NeuralNetworkBuilder(input_features, output_features)
     
-    W1 = np.random.rand(2048, 2048).astype(np.float32)
-    b1 = np.random.rand(2048).astype(np.float32)
-    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=2048, output_channels=2048, has_bias=True, input_name='input', output_name='output')
+    W1 = np.random.rand(8192, 8192).astype(np.float32)
+    b1 = np.random.rand(8192).astype(np.float32)
+    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=8192, output_channels=8192, has_bias=True, input_name='input', output_name='output')
     
     mlmodel = ct.models.MLModel(builder.spec)
     return mlmodel
@@ -37,7 +38,7 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
     loaded_model = ct.models.MLModel('/tmp/dummy_model.mlpackage', compute_units=compute_unit)
     # Warmup
     np.random.seed(seed)
-    dummy_input = {'input': np.random.rand(2048).astype(np.float32)}
+    dummy_input = {'input': np.random.rand(8192).astype(np.float32)}
     _ = loaded_model.predict(dummy_input)
     
     print(f"Running {iterations} iterations...")
@@ -71,7 +72,7 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
         for i in range(iterations):
             current_seed = seed + i
             np.random.seed(current_seed)
-            dummy_input = {'input': np.random.rand(2048).astype(np.float32)}
+            dummy_input = {'input': np.random.rand(8192).astype(np.float32)}
 
             start = time.perf_counter()
             _ = loaded_model.predict(dummy_input)
