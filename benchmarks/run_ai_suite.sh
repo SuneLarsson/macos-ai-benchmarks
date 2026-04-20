@@ -108,7 +108,7 @@ if [ "$OS_NAME" = "Darwin" ]; then
     pip install -r requirements.txt torchvision
     
     cd mlx_benchmark
-    python3 run_benchmark.py --include_mps=True --include_mlx_gpu=True --include_mlx_cpu=False --include_cpu=False | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_mac.txt"
+    python3 run_benchmark.py --include_mps=True --include_mlx_gpu=True --include_mlx_cpu=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_mac.txt"
     cd "$SCRIPT_DIR"
     
 elif [ "$OS_NAME" = "Linux" ]; then
@@ -140,7 +140,7 @@ elif [ "$OS_NAME" = "Linux" ]; then
     
     cd mlx_benchmark
     # Using mlx_gpu on linux maps to CUDA MLX
-    python3 run_benchmark.py --include_mps=False --include_mlx_gpu=True --include_mlx_cpu=False --include_cuda=True --include_cpu=False | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_linux.txt"
+    python3 run_benchmark.py --include_mps=False --include_mlx_gpu=True --include_mlx_cpu=True --include_cuda=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_linux.txt"
     cd "$SCRIPT_DIR"
     
 else

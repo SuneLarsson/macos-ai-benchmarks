@@ -1,0 +1,9 @@
+{
+    "mode": "stream",
+    "dataset_size_mb": 1000,
+    "epochs": 1000,
+    "nfs_to_ssd_copy_time_s": 0.0,
+    "read_to_ram_time_s": 22.431053125000002,
+    "compute_training_time_s": 78.19331154199999,
+    "total_pipeline_time_s": 100.624364667
+}

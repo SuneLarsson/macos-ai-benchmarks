@@ -1,0 +1,1608 @@
+{
+    "benchmark": "LLM Inference (MLX-LM)",
+    "model": "mlx-community/Mistral-7B-Instruct-v0.3-4bit",
+    "load_time_s": 42.229962874999956,
+    "target_iterations": 200,
+    "runs": [
+        {
+            "iteration": 1,
+            "seed": 8,
+            "time_to_first_token_s": 0.22839104200011207,
+            "total_generation_time_s": 11.032323916999985,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.204539852707114
+        },
+        {
+            "iteration": 2,
+            "seed": 9,
+            "time_to_first_token_s": 0.25070429099992,
+            "total_generation_time_s": 10.965317458000072,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.346337302184317
+        },
+        {
+            "iteration": 3,
+            "seed": 10,
+            "time_to_first_token_s": 0.2588252499999726,
+            "total_generation_time_s": 10.963822958000037,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.349519686762452
+        },
+        {
+            "iteration": 4,
+            "seed": 11,
+            "time_to_first_token_s": 0.25254562500003885,
+            "total_generation_time_s": 10.93856845800019,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.403428061262268
+        },
+        {
+            "iteration": 5,
+            "seed": 12,
+            "time_to_first_token_s": 0.2538374579999072,
+            "total_generation_time_s": 10.99038766600006,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.29308189846327
+        },
+        {
+            "iteration": 6,
+            "seed": 13,
+            "time_to_first_token_s": 0.25350808300026983,
+            "total_generation_time_s": 11.001291625000249,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.269994899348394
+        },
+        {
+            "iteration": 7,
+            "seed": 14,
+            "time_to_first_token_s": 0.25430020800013153,
+            "total_generation_time_s": 10.955643249999866,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36695291716469
+        },
+        {
+            "iteration": 8,
+            "seed": 15,
+            "time_to_first_token_s": 0.2554914590000408,
+            "total_generation_time_s": 10.995217000000139,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.282851079700997
+        },
+        {
+            "iteration": 9,
+            "seed": 16,
+            "time_to_first_token_s": 0.2578886250003052,
+            "total_generation_time_s": 10.954608209000071,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36916073271118
+        },
+        {
+            "iteration": 10,
+            "seed": 17,
+            "time_to_first_token_s": 0.25307566599985876,
+            "total_generation_time_s": 10.920498833000238,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.442152589806923
+        },
+        {
+            "iteration": 11,
+            "seed": 18,
+            "time_to_first_token_s": 0.2527062079998359,
+            "total_generation_time_s": 10.941157707999992,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.39788958647558
+        },
+        {
+            "iteration": 12,
+            "seed": 19,
+            "time_to_first_token_s": 0.2598739999998543,
+            "total_generation_time_s": 11.024164250000013,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.221714970366094
+        },
+        {
+            "iteration": 13,
+            "seed": 20,
+            "time_to_first_token_s": 0.23774316700018971,
+            "total_generation_time_s": 10.9621672090002,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35304644776974
+        },
+        {
+            "iteration": 14,
+            "seed": 21,
+            "time_to_first_token_s": 0.25864370799990866,
+            "total_generation_time_s": 10.928491500000291,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.425007925384136
+        },
+        {
+            "iteration": 15,
+            "seed": 22,
+            "time_to_first_token_s": 0.25422412499983693,
+            "total_generation_time_s": 10.942712957999902,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.394564125237864
+        },
+        {
+            "iteration": 16,
+            "seed": 23,
+            "time_to_first_token_s": 0.2545163329996285,
+            "total_generation_time_s": 10.948556542000006,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.38207772120029
+        },
+        {
+            "iteration": 17,
+            "seed": 24,
+            "time_to_first_token_s": 0.2552665830003207,
+            "total_generation_time_s": 10.992678999999953,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.28822664611612
+        },
+        {
+            "iteration": 18,
+            "seed": 25,
+            "time_to_first_token_s": 0.2439539169999989,
+            "total_generation_time_s": 10.916578166999898,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.45057178941578
+        },
+        {
+            "iteration": 19,
+            "seed": 26,
+            "time_to_first_token_s": 0.2587779590003265,
+            "total_generation_time_s": 10.95855154200035,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.360751557250996
+        },
+        {
+            "iteration": 20,
+            "seed": 27,
+            "time_to_first_token_s": 0.2532663750002939,
+            "total_generation_time_s": 11.008944874999997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.253817955010884
+        },
+        {
+            "iteration": 21,
+            "seed": 28,
+            "time_to_first_token_s": 0.2539643749996685,
+            "total_generation_time_s": 10.993929750000007,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.285577206821777
+        },
+        {
+            "iteration": 22,
+            "seed": 29,
+            "time_to_first_token_s": 0.25289233300009073,
+            "total_generation_time_s": 10.939792415999818,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.400809655729052
+        },
+        {
+            "iteration": 23,
+            "seed": 30,
+            "time_to_first_token_s": 0.2560353329999998,
+            "total_generation_time_s": 11.030212582999866,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.208981519953277
+        },
+        {
+            "iteration": 24,
+            "seed": 31,
+            "time_to_first_token_s": 0.24036770800012164,
+            "total_generation_time_s": 10.94924329100013,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.380611170675373
+        },
+        {
+            "iteration": 25,
+            "seed": 32,
+            "time_to_first_token_s": 0.25873029200010933,
+            "total_generation_time_s": 10.934532124999805,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.412067116681005
+        },
+        {
+            "iteration": 26,
+            "seed": 33,
+            "time_to_first_token_s": 0.25859129100035716,
+            "total_generation_time_s": 10.952195583000048,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.374308654363524
+        },
+        {
+            "iteration": 27,
+            "seed": 34,
+            "time_to_first_token_s": 0.25590504199999486,
+            "total_generation_time_s": 10.96245399999998,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35243550394834
+        },
+        {
+            "iteration": 28,
+            "seed": 35,
+            "time_to_first_token_s": 0.25301362499976676,
+            "total_generation_time_s": 11.012654249999741,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.245985408105046
+        },
+        {
+            "iteration": 29,
+            "seed": 36,
+            "time_to_first_token_s": 0.2534365000001344,
+            "total_generation_time_s": 10.980005249999977,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.315107249151865
+        },
+        {
+            "iteration": 30,
+            "seed": 37,
+            "time_to_first_token_s": 0.25423683300004996,
+            "total_generation_time_s": 10.970969832999799,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.334308989709598
+        },
+        {
+            "iteration": 31,
+            "seed": 38,
+            "time_to_first_token_s": 0.25450570799966954,
+            "total_generation_time_s": 10.958877457999733,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36005681066593
+        },
+        {
+            "iteration": 32,
+            "seed": 39,
+            "time_to_first_token_s": 0.2547092919999159,
+            "total_generation_time_s": 10.988054334000026,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.298028223965588
+        },
+        {
+            "iteration": 33,
+            "seed": 40,
+            "time_to_first_token_s": 0.2560815830001957,
+            "total_generation_time_s": 11.000930000000153,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.270759835759016
+        },
+        {
+            "iteration": 34,
+            "seed": 41,
+            "time_to_first_token_s": 0.2546672920002493,
+            "total_generation_time_s": 11.029202541999894,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.21110697034858
+        },
+        {
+            "iteration": 35,
+            "seed": 42,
+            "time_to_first_token_s": 0.2573305419996359,
+            "total_generation_time_s": 10.973333041999922,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.329283729945306
+        },
+        {
+            "iteration": 36,
+            "seed": 43,
+            "time_to_first_token_s": 0.252945666999949,
+            "total_generation_time_s": 10.929695249999895,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.422427994961932
+        },
+        {
+            "iteration": 37,
+            "seed": 44,
+            "time_to_first_token_s": 0.25241904099993917,
+            "total_generation_time_s": 10.932348915999683,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.416742547005573
+        },
+        {
+            "iteration": 38,
+            "seed": 45,
+            "time_to_first_token_s": 0.2619435420001537,
+            "total_generation_time_s": 10.962212417000046,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.3529501401559
+        },
+        {
+            "iteration": 39,
+            "seed": 46,
+            "time_to_first_token_s": 0.2332904170002621,
+            "total_generation_time_s": 10.932646250000289,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.416105684384807
+        },
+        {
+            "iteration": 40,
+            "seed": 47,
+            "time_to_first_token_s": 0.253838375000214,
+            "total_generation_time_s": 10.94932187500035,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.38044336649769
+        },
+        {
+            "iteration": 41,
+            "seed": 48,
+            "time_to_first_token_s": 0.25792674999956944,
+            "total_generation_time_s": 10.958364749999873,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.361149755487283
+        },
+        {
+            "iteration": 42,
+            "seed": 49,
+            "time_to_first_token_s": 0.25349887499987744,
+            "total_generation_time_s": 10.970085874999768,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.33618924382444
+        },
+        {
+            "iteration": 43,
+            "seed": 50,
+            "time_to_first_token_s": 0.25117579200014006,
+            "total_generation_time_s": 10.997503750000305,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.27800979381279
+        },
+        {
+            "iteration": 44,
+            "seed": 51,
+            "time_to_first_token_s": 0.2519883329996446,
+            "total_generation_time_s": 10.990347124999971,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.293167821576034
+        },
+        {
+            "iteration": 45,
+            "seed": 52,
+            "time_to_first_token_s": 0.25332270799981416,
+            "total_generation_time_s": 10.990818708000006,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.292168381747803
+        },
+        {
+            "iteration": 46,
+            "seed": 53,
+            "time_to_first_token_s": 0.25262449999991077,
+            "total_generation_time_s": 10.953384625000126,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.371771261980772
+        },
+        {
+            "iteration": 47,
+            "seed": 54,
+            "time_to_first_token_s": 0.2547675830001026,
+            "total_generation_time_s": 10.983117833000051,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.308499816948
+        },
+        {
+            "iteration": 48,
+            "seed": 55,
+            "time_to_first_token_s": 0.2555204169998433,
+            "total_generation_time_s": 10.989681334000124,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.294578998208202
+        },
+        {
+            "iteration": 49,
+            "seed": 56,
+            "time_to_first_token_s": 0.25664112499998737,
+            "total_generation_time_s": 10.962277042000096,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35281246945134
+        },
+        {
+            "iteration": 50,
+            "seed": 57,
+            "time_to_first_token_s": 0.25232599999981176,
+            "total_generation_time_s": 11.0363616249997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.196050355952973
+        },
+        {
+            "iteration": 51,
+            "seed": 58,
+            "time_to_first_token_s": 0.2590026249999937,
+            "total_generation_time_s": 10.930367500000102,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.420987446213278
+        },
+        {
+            "iteration": 52,
+            "seed": 59,
+            "time_to_first_token_s": 0.25564858300003834,
+            "total_generation_time_s": 10.98335841700009,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.30798925798161
+        },
+        {
+            "iteration": 53,
+            "seed": 60,
+            "time_to_first_token_s": 0.26035870800023986,
+            "total_generation_time_s": 11.013507375000245,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.244184734565025
+        },
+        {
+            "iteration": 54,
+            "seed": 61,
+            "time_to_first_token_s": 0.26259287499988204,
+            "total_generation_time_s": 11.005657249999786,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.260764367344347
+        },
+        {
+            "iteration": 55,
+            "seed": 62,
+            "time_to_first_token_s": 0.24693004100026883,
+            "total_generation_time_s": 10.925632082999982,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.43113863392213
+        },
+        {
+            "iteration": 56,
+            "seed": 63,
+            "time_to_first_token_s": 0.2594367910000983,
+            "total_generation_time_s": 10.979473875000167,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.31623563337602
+        },
+        {
+            "iteration": 57,
+            "seed": 64,
+            "time_to_first_token_s": 0.25291116600010355,
+            "total_generation_time_s": 10.966921457999888,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.342922713580595
+        },
+        {
+            "iteration": 58,
+            "seed": 65,
+            "time_to_first_token_s": 0.25025525000000926,
+            "total_generation_time_s": 10.944313416999648,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.39114298411436
+        },
+        {
+            "iteration": 59,
+            "seed": 66,
+            "time_to_first_token_s": 0.2529410000001917,
+            "total_generation_time_s": 10.942046209000182,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.395989663197714
+        },
+        {
+            "iteration": 60,
+            "seed": 67,
+            "time_to_first_token_s": 0.25587358399980076,
+            "total_generation_time_s": 10.961542958999871,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35437638273484
+        },
+        {
+            "iteration": 61,
+            "seed": 68,
+            "time_to_first_token_s": 0.2594109169999683,
+            "total_generation_time_s": 11.001932874999966,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.268638602741955
+        },
+        {
+            "iteration": 62,
+            "seed": 69,
+            "time_to_first_token_s": 0.25444212499996866,
+            "total_generation_time_s": 10.952568708999934,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.373512351457784
+        },
+        {
+            "iteration": 63,
+            "seed": 70,
+            "time_to_first_token_s": 0.25406504200009294,
+            "total_generation_time_s": 10.98090270900002,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.313201727047513
+        },
+        {
+            "iteration": 64,
+            "seed": 71,
+            "time_to_first_token_s": 0.25416579200009437,
+            "total_generation_time_s": 11.005484958000125,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.26112851700443
+        },
+        {
+            "iteration": 65,
+            "seed": 72,
+            "time_to_first_token_s": 0.23334966599986728,
+            "total_generation_time_s": 10.925868124999852,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.430632428579077
+        },
+        {
+            "iteration": 66,
+            "seed": 73,
+            "time_to_first_token_s": 0.2579751660000511,
+            "total_generation_time_s": 10.939738541000224,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.40092489784439
+        },
+        {
+            "iteration": 67,
+            "seed": 74,
+            "time_to_first_token_s": 0.2547487500000898,
+            "total_generation_time_s": 10.972294000000147,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.33149294030916
+        },
+        {
+            "iteration": 68,
+            "seed": 75,
+            "time_to_first_token_s": 0.2577005419998386,
+            "total_generation_time_s": 10.929785999999694,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.422233518570916
+        },
+        {
+            "iteration": 69,
+            "seed": 76,
+            "time_to_first_token_s": 0.25227241699985825,
+            "total_generation_time_s": 10.9564519999999,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.365228086610735
+        },
+        {
+            "iteration": 70,
+            "seed": 77,
+            "time_to_first_token_s": 0.2502450420001878,
+            "total_generation_time_s": 10.951529833999757,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.375729590329094
+        },
+        {
+            "iteration": 71,
+            "seed": 78,
+            "time_to_first_token_s": 0.251670500000273,
+            "total_generation_time_s": 10.948439375000362,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.38232794936507
+        },
+        {
+            "iteration": 72,
+            "seed": 79,
+            "time_to_first_token_s": 0.25537295799995263,
+            "total_generation_time_s": 10.969600958000228,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.337220832385604
+        },
+        {
+            "iteration": 73,
+            "seed": 80,
+            "time_to_first_token_s": 0.2563916250001057,
+            "total_generation_time_s": 10.9979149589999,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.277139435462544
+        },
+        {
+            "iteration": 74,
+            "seed": 81,
+            "time_to_first_token_s": 0.256281499999659,
+            "total_generation_time_s": 10.940870999999788,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.398502733466554
+        },
+        {
+            "iteration": 75,
+            "seed": 82,
+            "time_to_first_token_s": 0.26018216700003904,
+            "total_generation_time_s": 10.969582166999771,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.337260809270834
+        },
+        {
+            "iteration": 76,
+            "seed": 83,
+            "time_to_first_token_s": 0.2571459170003436,
+            "total_generation_time_s": 10.965449792000072,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.346055552300896
+        },
+        {
+            "iteration": 77,
+            "seed": 84,
+            "time_to_first_token_s": 0.2566467499996179,
+            "total_generation_time_s": 10.936855499999638,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.407093565422755
+        },
+        {
+            "iteration": 78,
+            "seed": 85,
+            "time_to_first_token_s": 0.25999766700033433,
+            "total_generation_time_s": 10.983508583000003,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.307670592275983
+        },
+        {
+            "iteration": 79,
+            "seed": 86,
+            "time_to_first_token_s": 0.25576341700025296,
+            "total_generation_time_s": 10.941465834000155,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.3972306712772
+        },
+        {
+            "iteration": 80,
+            "seed": 87,
+            "time_to_first_token_s": 0.2520218750000822,
+            "total_generation_time_s": 10.95446879200017,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36945815090109
+        },
+        {
+            "iteration": 81,
+            "seed": 88,
+            "time_to_first_token_s": 0.25191862500014395,
+            "total_generation_time_s": 10.949580125000011,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.37989192987432
+        },
+        {
+            "iteration": 82,
+            "seed": 89,
+            "time_to_first_token_s": 0.2517877499999486,
+            "total_generation_time_s": 10.949498958000277,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.38006524151984
+        },
+        {
+            "iteration": 83,
+            "seed": 90,
+            "time_to_first_token_s": 0.2545511660000557,
+            "total_generation_time_s": 11.002536874999805,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.267361237542275
+        },
+        {
+            "iteration": 84,
+            "seed": 91,
+            "time_to_first_token_s": 0.25362341700019897,
+            "total_generation_time_s": 10.983842916999947,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.306961136869763
+        },
+        {
+            "iteration": 85,
+            "seed": 92,
+            "time_to_first_token_s": 0.2553043749999233,
+            "total_generation_time_s": 10.96216058300024,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.353060563352486
+        },
+        {
+            "iteration": 86,
+            "seed": 93,
+            "time_to_first_token_s": 0.2538829589998386,
+            "total_generation_time_s": 10.965625333999924,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.345681819553747
+        },
+        {
+            "iteration": 87,
+            "seed": 94,
+            "time_to_first_token_s": 0.25269687499985594,
+            "total_generation_time_s": 11.000276249999843,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.272142824595306
+        },
+        {
+            "iteration": 88,
+            "seed": 95,
+            "time_to_first_token_s": 0.25320845799978997,
+            "total_generation_time_s": 10.931357624999691,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.418866053246266
+        },
+        {
+            "iteration": 89,
+            "seed": 96,
+            "time_to_first_token_s": 0.2617204580001271,
+            "total_generation_time_s": 10.995083250000334,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.283134304598576
+        },
+        {
+            "iteration": 90,
+            "seed": 97,
+            "time_to_first_token_s": 0.2548685829997339,
+            "total_generation_time_s": 10.961460416999671,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.354552245883248
+        },
+        {
+            "iteration": 91,
+            "seed": 98,
+            "time_to_first_token_s": 0.23610025000016321,
+            "total_generation_time_s": 10.957284250000157,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36345340315474
+        },
+        {
+            "iteration": 92,
+            "seed": 99,
+            "time_to_first_token_s": 0.25689245800003846,
+            "total_generation_time_s": 10.974424500000168,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.326963523234962
+        },
+        {
+            "iteration": 93,
+            "seed": 100,
+            "time_to_first_token_s": 0.2562710829997741,
+            "total_generation_time_s": 10.95676204199981,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36456692394091
+        },
+        {
+            "iteration": 94,
+            "seed": 101,
+            "time_to_first_token_s": 0.2524724579998292,
+            "total_generation_time_s": 10.998338082999908,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.27624392595262
+        },
+        {
+            "iteration": 95,
+            "seed": 102,
+            "time_to_first_token_s": 0.2506196250001267,
+            "total_generation_time_s": 10.92742616600026,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.42729167061516
+        },
+        {
+            "iteration": 96,
+            "seed": 103,
+            "time_to_first_token_s": 0.2528722500001095,
+            "total_generation_time_s": 10.944787124999948,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.390130577802463
+        },
+        {
+            "iteration": 97,
+            "seed": 104,
+            "time_to_first_token_s": 0.25656537499980914,
+            "total_generation_time_s": 10.981986959000096,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.310900017978955
+        },
+        {
+            "iteration": 98,
+            "seed": 105,
+            "time_to_first_token_s": 0.2596592919999239,
+            "total_generation_time_s": 10.959478499999932,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35877569356987
+        },
+        {
+            "iteration": 99,
+            "seed": 106,
+            "time_to_first_token_s": 0.25349645799997234,
+            "total_generation_time_s": 10.94388541599983,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.392057781026384
+        },
+        {
+            "iteration": 100,
+            "seed": 107,
+            "time_to_first_token_s": 0.2636560000000827,
+            "total_generation_time_s": 10.959318166999765,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.359117428569267
+        },
+        {
+            "iteration": 101,
+            "seed": 108,
+            "time_to_first_token_s": 0.25563516700003674,
+            "total_generation_time_s": 10.959337750000032,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.359075688674643
+        },
+        {
+            "iteration": 102,
+            "seed": 109,
+            "time_to_first_token_s": 0.25967508299982,
+            "total_generation_time_s": 11.013418582999748,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.244372133023273
+        },
+        {
+            "iteration": 103,
+            "seed": 110,
+            "time_to_first_token_s": 0.25818024999989575,
+            "total_generation_time_s": 10.949539707999975,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.37997822985753
+        },
+        {
+            "iteration": 104,
+            "seed": 111,
+            "time_to_first_token_s": 0.25234233299988773,
+            "total_generation_time_s": 10.947591667000324,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.384138519859942
+        },
+        {
+            "iteration": 105,
+            "seed": 112,
+            "time_to_first_token_s": 0.2549292090002382,
+            "total_generation_time_s": 10.995988625000336,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.281217244801592
+        },
+        {
+            "iteration": 106,
+            "seed": 113,
+            "time_to_first_token_s": 0.2293955410000308,
+            "total_generation_time_s": 10.906313458000113,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.472642794088795
+        },
+        {
+            "iteration": 107,
+            "seed": 114,
+            "time_to_first_token_s": 0.25230066700032694,
+            "total_generation_time_s": 10.99522591699997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.282832197580635
+        },
+        {
+            "iteration": 108,
+            "seed": 115,
+            "time_to_first_token_s": 0.2540850830000636,
+            "total_generation_time_s": 10.977797333000126,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.31979651605006
+        },
+        {
+            "iteration": 109,
+            "seed": 116,
+            "time_to_first_token_s": 0.25384137499986537,
+            "total_generation_time_s": 10.965078959000039,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.346845103188016
+        },
+        {
+            "iteration": 110,
+            "seed": 117,
+            "time_to_first_token_s": 0.25287229200012007,
+            "total_generation_time_s": 11.02728312499994,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.215147112675716
+        },
+        {
+            "iteration": 111,
+            "seed": 118,
+            "time_to_first_token_s": 0.2581454169999233,
+            "total_generation_time_s": 10.95335087500007,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.371843276224674
+        },
+        {
+            "iteration": 112,
+            "seed": 119,
+            "time_to_first_token_s": 0.2556848330000321,
+            "total_generation_time_s": 10.965898124999967,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.34510106530839
+        },
+        {
+            "iteration": 113,
+            "seed": 120,
+            "time_to_first_token_s": 0.2559442499996294,
+            "total_generation_time_s": 10.978392707999774,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.318531847877605
+        },
+        {
+            "iteration": 114,
+            "seed": 121,
+            "time_to_first_token_s": 0.25169658300001174,
+            "total_generation_time_s": 10.9428754999999,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.39421662980652
+        },
+        {
+            "iteration": 115,
+            "seed": 122,
+            "time_to_first_token_s": 0.255140124999798,
+            "total_generation_time_s": 10.949985249999827,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.37902692608687
+        },
+        {
+            "iteration": 116,
+            "seed": 123,
+            "time_to_first_token_s": 0.25899295799990796,
+            "total_generation_time_s": 10.99202487499997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.2896125064492
+        },
+        {
+            "iteration": 117,
+            "seed": 124,
+            "time_to_first_token_s": 0.2422143750000032,
+            "total_generation_time_s": 10.960610500000257,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.35636322447495
+        },
+        {
+            "iteration": 118,
+            "seed": 125,
+            "time_to_first_token_s": 0.25453537500015955,
+            "total_generation_time_s": 10.9569073749999,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.36425701508701
+        },
+        {
+            "iteration": 119,
+            "seed": 126,
+            "time_to_first_token_s": 0.2617970839996815,
+            "total_generation_time_s": 10.979471208999712,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.316241294950576
+        },
+        {
+            "iteration": 120,
+            "seed": 127,
+            "time_to_first_token_s": 0.25241700000015044,
+            "total_generation_time_s": 11.008514624999862,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.254726792898566
+        },
+        {
+            "iteration": 121,
+            "seed": 128,
+            "time_to_first_token_s": 0.2535982919998787,
+            "total_generation_time_s": 11.011074249999638,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.24932101879237
+        },
+        {
+            "iteration": 122,
+            "seed": 129,
+            "time_to_first_token_s": 0.25288866599976245,
+            "total_generation_time_s": 10.928124415999719,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.42579478919492
+        },
+        {
+            "iteration": 123,
+            "seed": 130,
+            "time_to_first_token_s": 0.2520643329999075,
+            "total_generation_time_s": 10.943518583000241,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.392841896177035
+        },
+        {
+            "iteration": 124,
+            "seed": 131,
+            "time_to_first_token_s": 0.2554716670001653,
+            "total_generation_time_s": 11.026147208000111,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.21753874410974
+        },
+        {
+            "iteration": 125,
+            "seed": 132,
+            "time_to_first_token_s": 0.25657029200010584,
+            "total_generation_time_s": 10.997431416999916,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.278162899408784
+        },
+        {
+            "iteration": 126,
+            "seed": 133,
+            "time_to_first_token_s": 0.25416358299980857,
+            "total_generation_time_s": 10.996544749999885,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.280039850699712
+        },
+        {
+            "iteration": 127,
+            "seed": 134,
+            "time_to_first_token_s": 0.2569377499999064,
+            "total_generation_time_s": 10.986360540999613,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.30162013568029
+        },
+        {
+            "iteration": 128,
+            "seed": 135,
+            "time_to_first_token_s": 0.25974304199962717,
+            "total_generation_time_s": 10.971167624999907,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.33388831072592
+        },
+        {
+            "iteration": 129,
+            "seed": 136,
+            "time_to_first_token_s": 0.255173042000024,
+            "total_generation_time_s": 10.99264358299979,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.288301678033665
+        },
+        {
+            "iteration": 130,
+            "seed": 137,
+            "time_to_first_token_s": 0.2571729999999661,
+            "total_generation_time_s": 10.964360082999974,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.34837583425621
+        },
+        {
+            "iteration": 131,
+            "seed": 138,
+            "time_to_first_token_s": 0.25633174999984476,
+            "total_generation_time_s": 10.962876832999882,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.351534811501494
+        },
+        {
+            "iteration": 132,
+            "seed": 139,
+            "time_to_first_token_s": 0.23680583299983482,
+            "total_generation_time_s": 10.934881167000185,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.411319802227865
+        },
+        {
+            "iteration": 133,
+            "seed": 140,
+            "time_to_first_token_s": 0.2511697079999067,
+            "total_generation_time_s": 10.932492583000112,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.41643482091877
+        },
+        {
+            "iteration": 134,
+            "seed": 141,
+            "time_to_first_token_s": 0.2538966249999248,
+            "total_generation_time_s": 10.999822750000021,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.273102287034536
+        },
+        {
+            "iteration": 135,
+            "seed": 142,
+            "time_to_first_token_s": 0.25331516699998247,
+            "total_generation_time_s": 11.036034084000221,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.19673879687837
+        },
+        {
+            "iteration": 136,
+            "seed": 143,
+            "time_to_first_token_s": 0.25179887499962206,
+            "total_generation_time_s": 10.924357332999989,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.433872785054593
+        },
+        {
+            "iteration": 137,
+            "seed": 144,
+            "time_to_first_token_s": 0.25802375000012034,
+            "total_generation_time_s": 10.976909042000443,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.321683637942062
+        },
+        {
+            "iteration": 138,
+            "seed": 145,
+            "time_to_first_token_s": 0.2552197919999344,
+            "total_generation_time_s": 10.967215749999923,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.342296334418496
+        },
+        {
+            "iteration": 139,
+            "seed": 146,
+            "time_to_first_token_s": 0.2581468329999552,
+            "total_generation_time_s": 10.96756279200008,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.34155772390294
+        },
+        {
+            "iteration": 140,
+            "seed": 147,
+            "time_to_first_token_s": 0.2552400829999897,
+            "total_generation_time_s": 10.97825550000016,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.318823286632043
+        },
+        {
+            "iteration": 141,
+            "seed": 148,
+            "time_to_first_token_s": 0.25833245799958604,
+            "total_generation_time_s": 10.957148291999601,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.3637433005191
+        },
+        {
+            "iteration": 142,
+            "seed": 149,
+            "time_to_first_token_s": 0.2526569589999781,
+            "total_generation_time_s": 10.951421374999882,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.375961095278626
+        },
+        {
+            "iteration": 143,
+            "seed": 150,
+            "time_to_first_token_s": 0.2567755000000034,
+            "total_generation_time_s": 10.997335333000137,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.278366281312774
+        },
+        {
+            "iteration": 144,
+            "seed": 151,
+            "time_to_first_token_s": 0.25768166600028053,
+            "total_generation_time_s": 10.941890375000185,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.396322868021393
+        },
+        {
+            "iteration": 145,
+            "seed": 152,
+            "time_to_first_token_s": 0.2581413750003776,
+            "total_generation_time_s": 10.953541250000399,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.371437068353643
+        },
+        {
+            "iteration": 146,
+            "seed": 153,
+            "time_to_first_token_s": 0.2574254579999433,
+            "total_generation_time_s": 10.960470500000156,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.356661559373418
+        },
+        {
+            "iteration": 147,
+            "seed": 154,
+            "time_to_first_token_s": 0.25207941700000447,
+            "total_generation_time_s": 10.947936459000175,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.38340206473753
+        },
+        {
+            "iteration": 148,
+            "seed": 155,
+            "time_to_first_token_s": 0.2513615830002891,
+            "total_generation_time_s": 10.976811957999871,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.32188990569597
+        },
+        {
+            "iteration": 149,
+            "seed": 156,
+            "time_to_first_token_s": 0.2580571659996167,
+            "total_generation_time_s": 10.985954040999786,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.302482337410407
+        },
+        {
+            "iteration": 150,
+            "seed": 157,
+            "time_to_first_token_s": 0.2586110000002009,
+            "total_generation_time_s": 10.974268750000192,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.327294586256194
+        },
+        {
+            "iteration": 151,
+            "seed": 158,
+            "time_to_first_token_s": 0.25592362499992305,
+            "total_generation_time_s": 10.989348915999926,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.29528363843987
+        },
+        {
+            "iteration": 152,
+            "seed": 159,
+            "time_to_first_token_s": 0.258681875000093,
+            "total_generation_time_s": 10.956907000000228,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.3642578147277
+        },
+        {
+            "iteration": 153,
+            "seed": 160,
+            "time_to_first_token_s": 0.2579209999998966,
+            "total_generation_time_s": 10.922966624999844,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.436856376918907
+        },
+        {
+            "iteration": 154,
+            "seed": 161,
+            "time_to_first_token_s": 0.2547087080001802,
+            "total_generation_time_s": 10.982067291000021,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.310729502613416
+        },
+        {
+            "iteration": 155,
+            "seed": 162,
+            "time_to_first_token_s": 0.25845637500015073,
+            "total_generation_time_s": 10.936416915999871,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.408032261962738
+        },
+        {
+            "iteration": 156,
+            "seed": 163,
+            "time_to_first_token_s": 0.25808462499981033,
+            "total_generation_time_s": 10.947620041999926,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.384077910803487
+        },
+        {
+            "iteration": 157,
+            "seed": 164,
+            "time_to_first_token_s": 0.2577742500002387,
+            "total_generation_time_s": 10.957872792000217,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.362198563474156
+        },
+        {
+            "iteration": 158,
+            "seed": 165,
+            "time_to_first_token_s": 0.23460770900010175,
+            "total_generation_time_s": 10.94310945899997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.393716471460245
+        },
+        {
+            "iteration": 159,
+            "seed": 166,
+            "time_to_first_token_s": 0.2542675419999796,
+            "total_generation_time_s": 10.977004333999957,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.32148118107876
+        },
+        {
+            "iteration": 160,
+            "seed": 167,
+            "time_to_first_token_s": 0.25109554099981324,
+            "total_generation_time_s": 10.966692625000178,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.34340979124468
+        },
+        {
+            "iteration": 161,
+            "seed": 168,
+            "time_to_first_token_s": 0.25258149999990565,
+            "total_generation_time_s": 10.945800750000217,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.387964558005947
+        },
+        {
+            "iteration": 162,
+            "seed": 169,
+            "time_to_first_token_s": 0.2537945409999338,
+            "total_generation_time_s": 10.946523999999954,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.386419287072414
+        },
+        {
+            "iteration": 163,
+            "seed": 170,
+            "time_to_first_token_s": 0.2571182090000548,
+            "total_generation_time_s": 11.016508750000412,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.23785201005631
+        },
+        {
+            "iteration": 164,
+            "seed": 171,
+            "time_to_first_token_s": 0.25618004200032374,
+            "total_generation_time_s": 10.941373042000123,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.39742909937401
+        },
+        {
+            "iteration": 165,
+            "seed": 172,
+            "time_to_first_token_s": 0.2558862079999926,
+            "total_generation_time_s": 11.037719207999999,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.193197360416132
+        },
+        {
+            "iteration": 166,
+            "seed": 173,
+            "time_to_first_token_s": 0.2535608749999483,
+            "total_generation_time_s": 10.917020874999707,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.449620819746475
+        },
+        {
+            "iteration": 167,
+            "seed": 174,
+            "time_to_first_token_s": 0.255444959000215,
+            "total_generation_time_s": 10.93764983400024,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.405393652684968
+        },
+        {
+            "iteration": 168,
+            "seed": 175,
+            "time_to_first_token_s": 0.25875987500012343,
+            "total_generation_time_s": 10.96690020799997,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.342967943964418
+        },
+        {
+            "iteration": 169,
+            "seed": 176,
+            "time_to_first_token_s": 0.2613774999999805,
+            "total_generation_time_s": 10.966148833999796,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.344567347680844
+        },
+        {
+            "iteration": 170,
+            "seed": 177,
+            "time_to_first_token_s": 0.25343225000005987,
+            "total_generation_time_s": 10.93396437499996,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.413282796616112
+        },
+        {
+            "iteration": 171,
+            "seed": 178,
+            "time_to_first_token_s": 0.2602293749996534,
+            "total_generation_time_s": 10.984038000000055,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.30654719147901
+        },
+        {
+            "iteration": 172,
+            "seed": 179,
+            "time_to_first_token_s": 0.25538637499994365,
+            "total_generation_time_s": 10.965702791999774,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.345516913587097
+        },
+        {
+            "iteration": 173,
+            "seed": 180,
+            "time_to_first_token_s": 0.2516875000001164,
+            "total_generation_time_s": 10.989716125000086,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.294505252745825
+        },
+        {
+            "iteration": 174,
+            "seed": 181,
+            "time_to_first_token_s": 0.26016137499982506,
+            "total_generation_time_s": 10.973747209000067,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.328403244977505
+        },
+        {
+            "iteration": 175,
+            "seed": 182,
+            "time_to_first_token_s": 0.2576201659999242,
+            "total_generation_time_s": 10.959655000000112,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.358399511663222
+        },
+        {
+            "iteration": 176,
+            "seed": 183,
+            "time_to_first_token_s": 0.2567779169999085,
+            "total_generation_time_s": 11.000926208000237,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.270767857149004
+        },
+        {
+            "iteration": 177,
+            "seed": 184,
+            "time_to_first_token_s": 0.2577440840000236,
+            "total_generation_time_s": 10.93197654200003,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.41754018740002
+        },
+        {
+            "iteration": 178,
+            "seed": 185,
+            "time_to_first_token_s": 0.25973229200008063,
+            "total_generation_time_s": 10.972124917000201,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.331852484048355
+        },
+        {
+            "iteration": 179,
+            "seed": 186,
+            "time_to_first_token_s": 0.2589920410000559,
+            "total_generation_time_s": 10.956993540999974,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.364073278137255
+        },
+        {
+            "iteration": 180,
+            "seed": 187,
+            "time_to_first_token_s": 0.25505183299992495,
+            "total_generation_time_s": 10.979000499999984,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.317240945566983
+        },
+        {
+            "iteration": 181,
+            "seed": 188,
+            "time_to_first_token_s": 0.25796695799999725,
+            "total_generation_time_s": 10.939973707999798,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.400421868729115
+        },
+        {
+            "iteration": 182,
+            "seed": 189,
+            "time_to_first_token_s": 0.2604051250000339,
+            "total_generation_time_s": 10.984757125000215,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.305021411658657
+        },
+        {
+            "iteration": 183,
+            "seed": 190,
+            "time_to_first_token_s": 0.2543969590001325,
+            "total_generation_time_s": 11.004226000000017,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.26378974768417
+        },
+        {
+            "iteration": 184,
+            "seed": 191,
+            "time_to_first_token_s": 0.2380037920001996,
+            "total_generation_time_s": 10.952661499999977,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.373314330950567
+        },
+        {
+            "iteration": 185,
+            "seed": 192,
+            "time_to_first_token_s": 0.2519817500001409,
+            "total_generation_time_s": 10.941791499999908,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.396534287826828
+        },
+        {
+            "iteration": 186,
+            "seed": 193,
+            "time_to_first_token_s": 0.25686229199982336,
+            "total_generation_time_s": 10.968669916999715,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.33920173887631
+        },
+        {
+            "iteration": 187,
+            "seed": 194,
+            "time_to_first_token_s": 0.25908279199984463,
+            "total_generation_time_s": 11.006104292000146,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.25981956995221
+        },
+        {
+            "iteration": 188,
+            "seed": 195,
+            "time_to_first_token_s": 0.2598141250000481,
+            "total_generation_time_s": 10.94293883399996,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.394081232054607
+        },
+        {
+            "iteration": 189,
+            "seed": 196,
+            "time_to_first_token_s": 0.2587284580004052,
+            "total_generation_time_s": 10.99946887499982,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.273851029466563
+        },
+        {
+            "iteration": 190,
+            "seed": 197,
+            "time_to_first_token_s": 0.25648966699918674,
+            "total_generation_time_s": 11.005219749999924,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.26168907258774
+        },
+        {
+            "iteration": 191,
+            "seed": 198,
+            "time_to_first_token_s": 0.2581282499995723,
+            "total_generation_time_s": 10.987375499999871,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.29946764812061
+        },
+        {
+            "iteration": 192,
+            "seed": 199,
+            "time_to_first_token_s": 0.25612070900024264,
+            "total_generation_time_s": 11.021528833999582,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.227267637342887
+        },
+        {
+            "iteration": 193,
+            "seed": 200,
+            "time_to_first_token_s": 0.2597689160002119,
+            "total_generation_time_s": 10.957985291000114,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.361958717927372
+        },
+        {
+            "iteration": 194,
+            "seed": 201,
+            "time_to_first_token_s": 0.2536577499995474,
+            "total_generation_time_s": 10.96446724999987,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.348147626598365
+        },
+        {
+            "iteration": 195,
+            "seed": 202,
+            "time_to_first_token_s": 0.2572179999997388,
+            "total_generation_time_s": 10.999762292000014,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.273230203000434
+        },
+        {
+            "iteration": 196,
+            "seed": 203,
+            "time_to_first_token_s": 0.25825620900013746,
+            "total_generation_time_s": 11.004809541999748,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.26255615992067
+        },
+        {
+            "iteration": 197,
+            "seed": 204,
+            "time_to_first_token_s": 0.26081449999946926,
+            "total_generation_time_s": 10.989981791999526,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.293942141593227
+        },
+        {
+            "iteration": 198,
+            "seed": 205,
+            "time_to_first_token_s": 0.2568318339999678,
+            "total_generation_time_s": 11.039257250000446,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.18996597347975
+        },
+        {
+            "iteration": 199,
+            "seed": 206,
+            "time_to_first_token_s": 0.23617420800019318,
+            "total_generation_time_s": 10.941572499999893,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.397002578925697
+        },
+        {
+            "iteration": 200,
+            "seed": 207,
+            "time_to_first_token_s": 0.25440975000037724,
+            "total_generation_time_s": 10.944224707999638,
+            "tokens_generated": 256,
+            "tokens_per_second": 23.39133258227765
+        }
+    ]
+}

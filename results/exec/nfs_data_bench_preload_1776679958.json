@@ -1,0 +1,9 @@
+{
+    "mode": "preload",
+    "dataset_size_mb": 1000,
+    "epochs": 1000,
+    "nfs_to_ssd_copy_time_s": 0.357987416,
+    "read_to_ram_time_s": 0.074728833,
+    "compute_training_time_s": 77.884263292,
+    "total_pipeline_time_s": 78.316979541
+}
