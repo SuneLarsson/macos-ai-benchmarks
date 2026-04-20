@@ -47,7 +47,7 @@ def benchmark_cross_platform(iterations=1000, seed=42, prefix="", output_dir="re
     
     os.makedirs(output_dir, exist_ok=True)
     filename_prefix = f"{prefix}_" if prefix else ""
-    filename = f"{output_dir}/{filename_prefix}cross_platform_stats_{int(time.time())}.json"
+    filename = f"{output_dir}/{filename_prefix}cross_platform_stats_{time.strftime('%Y-%m-%d-%H-%M')}.json"
     
     def save_results(current_times):
         if not current_times: return

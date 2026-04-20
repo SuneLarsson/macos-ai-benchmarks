@@ -84,12 +84,18 @@ def create_diff_master(master_rows, output_path):
     print(f"Created master file: {output_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--date', type=str, default='', help='Optional date string to filter by (e.g., 2026-04-20)')
+    args = parser.parse_args()
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    search_pattern = os.path.join(script_dir, "**", "mlx_benchmark_suite_mac.txt")
+    file_pattern = f"mlx_benchmark_suite_mac*{args.date}*.txt" if args.date else "mlx_benchmark_suite_mac*.txt"
+    search_pattern = os.path.join(script_dir, "**", file_pattern)
     txt_files = glob.glob(search_pattern, recursive=True)
     
     if not txt_files:
-        print("No mlx_benchmark_suite_mac.txt files found in subdirectories.")
+        print("No mlx_benchmark_suite_mac*.txt files found in subdirectories.")
         exit(0)
         
     master_detailed_rows = []

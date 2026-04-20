@@ -44,7 +44,7 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
     
     os.makedirs(output_dir, exist_ok=True)
     filename_prefix = f"{prefix}_" if prefix else ""
-    filename = f"{output_dir}/{filename_prefix}coreml_stats_{name}_{int(time.time())}.json"
+    filename = f"{output_dir}/{filename_prefix}coreml_stats_{name}_{time.strftime('%Y-%m-%d-%H-%M')}.json"
     
     def save_results(current_times):
         if not current_times: return

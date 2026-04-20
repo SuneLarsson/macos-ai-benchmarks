@@ -114,7 +114,7 @@ def main():
             print(f"{k}: {v}")
         
     os.makedirs(args.output_dir, exist_ok=True)
-    filename = f"{args.output_dir}/nfs_data_bench_{args.mode}_{int(time.time())}.json"
+    filename = f"{args.output_dir}/nfs_data_bench_{args.mode}_{time.strftime('%Y-%m-%d-%H-%M')}.json"
     with open(filename, "w") as f:
         json.dump(stats, f, indent=4)
     print(f"Results saved to {filename}")

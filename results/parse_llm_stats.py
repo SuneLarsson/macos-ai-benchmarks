@@ -2,10 +2,16 @@ import os
 import json
 import glob
 import csv
+import argparse
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--date', type=str, default='', help='Optional date string to filter by (e.g., 2026-04-20)')
+    args = parser.parse_args()
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    search_pattern = os.path.join(script_dir, "**", "llm_stats_*.json")
+    file_pattern = f"llm_stats_*{args.date}*.json" if args.date else "llm_stats_*.json"
+    search_pattern = os.path.join(script_dir, "**", file_pattern)
     json_files = glob.glob(search_pattern, recursive=True)
     
     if not json_files:
