@@ -15,17 +15,29 @@ def timeout_handler(signum, frame):
     sys.exit(124)
 
 def create_dummy_model_vector_matrix():
-    # Massive 16384 inner product (268M MACs per iteration)
-    dim = 32768
-    input_features = [('input', datatypes.Array(dim))]
-    output_features = [('output', datatypes.Array(dim))]
-    builder = NeuralNetworkBuilder(input_features, output_features)
+    class DummyVecMat(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            # Massive 32768 inner product (2.1 Billion MACs per iteration)
+            self.fc = torch.nn.Linear(32768, 32768)
+        
+        def forward(self, x):
+            return self.fc(x)
+
+    model = DummyVecMat()
+    model.eval()
     
-    W1 = np.random.rand(dim, dim).astype(np.float32)
-    b1 = np.random.rand(dim).astype(np.float32)
-    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=dim, output_channels=dim, has_bias=True, input_name='input', output_name='output')
+    # 1D vector input
+    dummy_input = torch.rand(32768)
+    traced_model = torch.jit.trace(model, dummy_input)
     
-    return ct.models.MLModel(builder.spec)
+    # Using PyTorch converter emits 'mlprogram', separating weights into a .bin file 
+    # instead of embedding 4GB of floats into the Protobuf spec!
+    mlmodel = ct.convert(
+        traced_model,
+        inputs=[ct.TensorType(name="input", shape=(32768,))]
+    )
+    return mlmodel
 
 def create_dummy_model_matrix_matrix():
     class DummyMatMat(torch.nn.Module):
@@ -123,7 +135,7 @@ if __name__ == "__main__":
                                        ("CPU_AND_GPU", ct.ComputeUnit.CPU_AND_GPU), 
                                        ("ALL", ct.ComputeUnit.ALL)]:
         # Vector-Matrix
-        run_benchmark_variant(create_dummy_model_vector_matrix, (16384,), "VecMat", iterations=args.runs, seed=args.seed, compute_unit=compute_unit, name=compute_name, output_dir=args.output_dir)
+        run_benchmark_variant(create_dummy_model_vector_matrix, (32768,), "VecMat", iterations=args.runs, seed=args.seed, compute_unit=compute_unit, name=compute_name, output_dir=args.output_dir)
         # Matrix-Matrix
         run_benchmark_variant(create_dummy_model_matrix_matrix, (512, 8192), "MatMat", iterations=args.runs, seed=args.seed, compute_unit=compute_unit, name=compute_name, output_dir=args.output_dir)
 
