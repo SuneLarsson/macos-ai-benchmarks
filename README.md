@@ -39,6 +39,9 @@ source venv/bin/activate
 pip install numpy mlx coremltools torch transformers accelerate mlx-lm
 # Execute the unified test suite
 bash run_ai_suite.sh
+
+# Alternatively, run only specific benchmarks:
+# bash run_ai_suite.sh --test "coreml,llm"
 ```
 
 **On Linux (NVIDIA CUDA):**
@@ -49,6 +52,9 @@ cd benchmarks/
 pip install mlx transformers accelerate mlx-lm
 # Execute the suite (it will detect Linux and pivot to CUDA testing)
 bash run_ai_suite.sh
+
+# Alternatively, run only specific benchmarks:
+# bash run_ai_suite.sh --test "mlx,pytorch"
 ```
 
 ### 1. Upload Scripts to your PVC
@@ -60,6 +66,8 @@ Apply the Kubernetes Job. Make sure the NFS mount paths inside the YAML match yo
 ```bash
 kubectl apply -f ai_test_suite.yaml
 ```
+
+*(Optional)* You can modify the `command` arguments in `ai_test_suite.yaml` to include `--test "coreml, llm"` run flags if you only want to schedule a subset of the benchmarks on your cluster. Valid keywords: `cpu`, `mlx`, `coreml`, `pytorch`, `llm`, `nfs`, and `mlx_bench`.
 
 Once the pod starts, follow the logs. It will take a few minutes to install `coremltools` inside the virtual environment before execution starts.
 ```bash

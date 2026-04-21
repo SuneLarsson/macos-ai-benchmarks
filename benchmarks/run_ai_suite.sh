@@ -1,7 +1,22 @@
 #!/usr/bin/env bash
 set -e
+
+# ==============================================================================
+# AI Benchmark Suite Runner
+# 
+# Supported flags:
+#   --runs <N>          Set the number of iterations for benchmarks
+#   --timeout <N>       Set a timeout in seconds
+#   --seed <N>          Set the random seed manually
+#   --output-dir <DIR>  Save results to a specific directory
+#   --test <TESTS>      Comma-separated list of benchmarks to run. Defaults to "all".
+#                       Supported keywords: cpu, mlx, coreml, pytorch, llm, nfs, mlx_bench
+# ==============================================================================
+
 BENCH_ARGS=""
 OUTPUT_DIR="results"
+TESTS="all"
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     --runs)
@@ -21,6 +36,10 @@ while [[ $# -gt 0 ]]; do
       OUTPUT_DIR="$2"
       shift 2
       ;;
+    --test|--tests)
+      TESTS="$2"
+      shift 2
+      ;;
     *)
       echo "Unknown argument: $1"
       exit 1
@@ -32,6 +51,16 @@ echo "=== AI Benchmark Suite Runner ==="
 if [ -n "$BENCH_ARGS" ]; then
     echo "Using bench args:$BENCH_ARGS"
 fi
+echo "Targeting tests: $TESTS"
+
+should_run() {
+    local target=$1
+    if [[ "$TESTS" == "all" ]] || [[ "$TESTS" == *"$target"* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 # Get the directory of this script, which should be the NFS mount's benchmark_scripts/ dir
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -73,75 +102,97 @@ if [ "$OS_NAME" = "Darwin" ]; then
     echo "Installing dependencies (may take a minute for coremltools)..."
     pip install numpy mlx coremltools torch torchvision transformers accelerate mlx-lm "urllib3<2"
     
-    echo "=================================="
-    echo "--- Running CPU Baseline ---"
-    python3 cpu_ml_baseline.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running GPU MLX Benchmark ---"
-    python3 gpu_mlx_test.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running CoreML Hardware Validation Benchmark ---"
-    python3 coreml_hardware_bench.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running Cross-Platform PyTorch Benchmark ---"
-    python3 cross_platform_ai_bench.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running Cross-Platform LLM Inference Benchmark ---"
-    python3 llm_inference_bench.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running NFS Data Pipeline Benchmark ---"
-    python3 nfs_data_bench.py --mode stream $BENCH_ARGS
-    python3 nfs_data_bench.py --mode preload $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
-    cd "$VENV_DIR"
-    if [ ! -d "mlx-benchmark" ]; then
-        git clone https://github.com/TristanBilot/mlx-benchmark.git
+    if should_run "cpu"; then
+        echo "=================================="
+        echo "--- Running CPU Baseline ---"
+        python3 cpu_ml_baseline.py $BENCH_ARGS
     fi
-    cd mlx-benchmark
-    pip install -r requirements.txt torchvision
     
-    cd mlx_benchmark
-    python3 run_benchmark.py --include_mps=True --include_mlx_gpu=True --include_mlx_cpu=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_mac_$(date +%Y-%m-%d-%H-%M).txt"
-    cd "$SCRIPT_DIR"
+    if should_run "mlx"; then
+        echo "=================================="
+        echo "--- Running GPU MLX Benchmark ---"
+        python3 gpu_mlx_test.py $BENCH_ARGS
+    fi
+    
+    if should_run "coreml"; then
+        echo "=================================="
+        echo "--- Running CoreML Hardware Validation Benchmark ---"
+        python3 coreml_hardware_bench.py $BENCH_ARGS
+    fi
+    
+    if should_run "pytorch"; then
+        echo "=================================="
+        echo "--- Running Cross-Platform PyTorch Benchmark ---"
+        python3 cross_platform_ai_bench.py $BENCH_ARGS
+    fi
+    
+    if should_run "llm"; then
+        echo "=================================="
+        echo "--- Running Cross-Platform LLM Inference Benchmark ---"
+        python3 llm_inference_bench.py $BENCH_ARGS
+    fi
+    
+    if should_run "nfs"; then
+        echo "=================================="
+        echo "--- Running NFS Data Pipeline Benchmark ---"
+        python3 nfs_data_bench.py --mode stream $BENCH_ARGS
+        python3 nfs_data_bench.py --mode preload $BENCH_ARGS
+    fi
+    
+    if should_run "mlx_bench"; then
+        echo "=================================="
+        echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
+        cd "$VENV_DIR"
+        if [ ! -d "mlx-benchmark" ]; then
+            git clone https://github.com/TristanBilot/mlx-benchmark.git
+        fi
+        cd mlx-benchmark
+        pip install -r requirements.txt torchvision
+        
+        cd mlx_benchmark
+        python3 run_benchmark.py --include_mps=True --include_mlx_gpu=True --include_mlx_cpu=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_mac_$(date +%Y-%m-%d-%H-%M).txt"
+        cd "$SCRIPT_DIR"
+    fi
     
 elif [ "$OS_NAME" = "Linux" ]; then
     echo "--- Detected Linux Worker ---"
     
-    echo "=================================="
-    echo "--- Running MLX Benchmark on Linux ---"
-    python3 gpu_mlx_test.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running Cross Platform PyTorch Benchmark ---"
-    python3 cross_platform_ai_bench.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running Cross-Platform LLM Inference Benchmark ---"
-    python3 llm_inference_bench.py $BENCH_ARGS
-    
-    echo "=================================="
-    echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
-    # Clone to a safe localized tmp directory to avoid bare-metal Ceph concurrent locking natively
-    WORK_DIR=$(mktemp -d)
-    cd "$WORK_DIR"
-    
-    if [ ! -d "mlx-benchmark" ]; then
-        git clone https://github.com/TristanBilot/mlx-benchmark.git
+    if should_run "mlx"; then
+        echo "=================================="
+        echo "--- Running MLX Benchmark on Linux ---"
+        python3 gpu_mlx_test.py $BENCH_ARGS
     fi
-    cd mlx-benchmark
-    pip install -r requirements.txt torchvision
     
-    cd mlx_benchmark
-    # Using mlx_gpu on linux maps to CUDA MLX
-    python3 run_benchmark.py --include_mps=False --include_mlx_gpu=True --include_mlx_cpu=True --include_cuda=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_linux_$(date +%Y-%m-%d-%H-%M).txt"
-    cd "$SCRIPT_DIR"
+    if should_run "pytorch"; then
+        echo "=================================="
+        echo "--- Running Cross Platform PyTorch Benchmark ---"
+        python3 cross_platform_ai_bench.py $BENCH_ARGS
+    fi
+    
+    if should_run "llm"; then
+        echo "=================================="
+        echo "--- Running Cross-Platform LLM Inference Benchmark ---"
+        python3 llm_inference_bench.py $BENCH_ARGS
+    fi
+    
+    if should_run "mlx_bench"; then
+        echo "=================================="
+        echo "--- Running mlx-benchmark Suite (TristanBilot) ---"
+        # Clone to a safe localized tmp directory to avoid bare-metal Ceph concurrent locking natively
+        WORK_DIR=$(mktemp -d)
+        cd "$WORK_DIR"
+        
+        if [ ! -d "mlx-benchmark" ]; then
+            git clone https://github.com/TristanBilot/mlx-benchmark.git
+        fi
+        cd mlx-benchmark
+        pip install -r requirements.txt torchvision
+        
+        cd mlx_benchmark
+        # Using mlx_gpu on linux maps to CUDA MLX
+        python3 run_benchmark.py --include_mps=False --include_mlx_gpu=True --include_mlx_cpu=True --include_cuda=True --include_cpu=True | tee "$ABS_OUTPUT_DIR/mlx_benchmark_suite_linux_$(date +%Y-%m-%d-%H-%M).txt"
+        cd "$SCRIPT_DIR"
+    fi
     
 else
     echo "Unknown OS: $OS_NAME"

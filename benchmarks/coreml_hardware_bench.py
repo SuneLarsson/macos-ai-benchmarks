@@ -13,45 +13,63 @@ def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
     sys.exit(124)
 
-def create_dummy_model():
-    # Create a simple neural network: an MLP with one hidden layer
-    # Size increased to 8192 to ensure ANE invocation (ANE ignores very tiny models due to overhead)
-    # and to overcome the CoreML dispatch overhead.
-    input_features = [('input', datatypes.Array(8192))]
-    output_features = [('output', datatypes.Array(8192))]
+def create_dummy_model_vector_matrix():
+    # Massive 16384 inner product (268M MACs per iteration)
+    dim = 16384
+    input_features = [('input', datatypes.Array(dim))]
+    output_features = [('output', datatypes.Array(dim))]
     builder = NeuralNetworkBuilder(input_features, output_features)
     
-    W1 = np.random.rand(8192, 8192).astype(np.float32)
-    b1 = np.random.rand(8192).astype(np.float32)
-    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=8192, output_channels=8192, has_bias=True, input_name='input', output_name='output')
+    W1 = np.random.rand(dim, dim).astype(np.float32)
+    b1 = np.random.rand(dim).astype(np.float32)
+    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=dim, output_channels=dim, has_bias=True, input_name='input', output_name='output')
     
-    mlmodel = ct.models.MLModel(builder.spec)
-    return mlmodel
+    return ct.models.MLModel(builder.spec)
 
-def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir="results"):
+def create_dummy_model_matrix_matrix():
+    # Batch Multiplied Matrix (34 Billion MACs per iteration)
+    # 512 batch passes simultaneously across the NPU
+    batch_size = 512
+    dim = 8192
+    
+    # In older CoreML NeuralNetworkBuilder, input shapes are often flattened or batched implicitly at inference time
+    # However we can specify sequence/batch explicitly using the multi-dimensional array spec if supported.
+    # We define the input feature as multi-dimensional to force the Matrix-Matrix ops.
+    input_features = [('input', datatypes.Array(batch_size, dim))]
+    output_features = [('output', datatypes.Array(batch_size, dim))]
+    builder = NeuralNetworkBuilder(input_features, output_features)
+    
+    W1 = np.random.rand(dim, dim).astype(np.float32)
+    b1 = np.random.rand(dim).astype(np.float32)
+    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=dim, output_channels=dim, has_bias=True, input_name='input', output_name='output')
+    
+    return ct.models.MLModel(builder.spec)
+
+def run_benchmark_variant(model_factory, input_shape, variant_name, iterations=1000, seed=42, prefix="", compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir="results"):
     np.random.seed(seed)
-    print(f"\n--- Starting CoreML validation benchmark (ComputeUnit: {name}) ---")
-    model = create_dummy_model()
+    print(f"\n--- Starting CoreML validation benchmark: {variant_name} (ComputeUnit: {name}) ---")
+    model = model_factory()
     model.save('/tmp/dummy_model.mlpackage')
     
-    print(f"Loading model with ComputeUnit = {name}...")
+    print(f"Loading {variant_name} model with ComputeUnit = {name}...")
     loaded_model = ct.models.MLModel('/tmp/dummy_model.mlpackage', compute_units=compute_unit)
+    
     # Warmup
     np.random.seed(seed)
-    dummy_input = {'input': np.random.rand(8192).astype(np.float32)}
+    dummy_input = {'input': np.random.rand(*input_shape).astype(np.float32)}
     _ = loaded_model.predict(dummy_input)
     
     print(f"Running {iterations} iterations...")
     
     os.makedirs(output_dir, exist_ok=True)
     filename_prefix = f"{prefix}_" if prefix else ""
-    filename = f"{output_dir}/{filename_prefix}coreml_stats_{name}_{time.strftime('%Y-%m-%d-%H-%M')}.json"
+    filename = f"{output_dir}/{filename_prefix}coreml_{variant_name}_{name}_{time.strftime('%Y-%m-%d-%H-%M')}.json"
     
     def save_results(current_times):
         if not current_times: return
         times_arr = np.array(current_times)
         stats = {
-            "benchmark": f"CoreML ({name})",
+            "benchmark": f"CoreML {variant_name} ({name})",
             "iterations_completed": len(current_times),
             "target_iterations": iterations,
             "mean_s": float(np.mean(times_arr)),
@@ -72,7 +90,7 @@ def benchmark_coreml(iterations=1000, seed=42, prefix="", compute_unit=ct.Comput
         for i in range(iterations):
             current_seed = seed + i
             np.random.seed(current_seed)
-            dummy_input = {'input': np.random.rand(8192).astype(np.float32)}
+            dummy_input = {'input': np.random.rand(*input_shape).astype(np.float32)}
 
             start = time.perf_counter()
             _ = loaded_model.predict(dummy_input)
@@ -98,9 +116,11 @@ if __name__ == "__main__":
         signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(args.timeout)
 
-    # Run explicitly on CPU to establish a CoreML baseline
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_ONLY, name="CPU_ONLY", output_dir=args.output_dir)
-    # Run with CPU AND GPU to track GPU performance impact within CoreML
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.CPU_AND_GPU, name="CPU_AND_GPU", output_dir=args.output_dir)
-    # Run with ALL (Which forces ANE if available)
-    benchmark_coreml(iterations=args.runs, seed=args.seed, compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir=args.output_dir)
+    for compute_name, compute_unit in [("CPU_ONLY", ct.ComputeUnit.CPU_ONLY), 
+                                       ("CPU_AND_GPU", ct.ComputeUnit.CPU_AND_GPU), 
+                                       ("ALL", ct.ComputeUnit.ALL)]:
+        # Vector-Matrix
+        run_benchmark_variant(create_dummy_model_vector_matrix, (16384,), "VecMat", iterations=args.runs, seed=args.seed, compute_unit=compute_unit, name=compute_name, output_dir=args.output_dir)
+        # Matrix-Matrix
+        run_benchmark_variant(create_dummy_model_matrix_matrix, (512, 8192), "MatMat", iterations=args.runs, seed=args.seed, compute_unit=compute_unit, name=compute_name, output_dir=args.output_dir)
+
