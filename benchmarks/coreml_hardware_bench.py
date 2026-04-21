@@ -8,6 +8,7 @@ import signal
 import sys
 from coremltools.models.neural_network import NeuralNetworkBuilder
 from coremltools.models import datatypes
+import torch
 
 def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
@@ -27,23 +28,25 @@ def create_dummy_model_vector_matrix():
     return ct.models.MLModel(builder.spec)
 
 def create_dummy_model_matrix_matrix():
-    # Batch Multiplied Matrix (34 Billion MACs per iteration)
-    # 512 batch passes simultaneously across the NPU
-    batch_size = 512
-    dim = 8192
+    class DummyMatMat(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            # 8192 -> 8192 linear layer
+            self.fc = torch.nn.Linear(8192, 8192)
+        def forward(self, x):
+            return self.fc(x)
+
+    model = DummyMatMat()
+    model.eval()
+    dummy_input = torch.rand(512, 8192)
+    traced_model = torch.jit.trace(model, dummy_input)
     
-    # In older CoreML NeuralNetworkBuilder, input shapes are often flattened or batched implicitly at inference time
-    # However we can specify sequence/batch explicitly using the multi-dimensional array spec if supported.
-    # We define the input feature as multi-dimensional to force the Matrix-Matrix ops.
-    input_features = [('input', datatypes.Array(batch_size, dim))]
-    output_features = [('output', datatypes.Array(batch_size, dim))]
-    builder = NeuralNetworkBuilder(input_features, output_features)
-    
-    W1 = np.random.rand(dim, dim).astype(np.float32)
-    b1 = np.random.rand(dim).astype(np.float32)
-    builder.add_inner_product(name='fc1', W=W1, b=b1, input_channels=dim, output_channels=dim, has_bias=True, input_name='input', output_name='output')
-    
-    return ct.models.MLModel(builder.spec)
+    # Convert using standard PyTorch pipeline to properly authorize 2D batched MLProgram execution
+    mlmodel = ct.convert(
+        traced_model,
+        inputs=[ct.TensorType(name="input", shape=(512, 8192))]
+    )
+    return mlmodel
 
 def run_benchmark_variant(model_factory, input_shape, variant_name, iterations=1000, seed=42, prefix="", compute_unit=ct.ComputeUnit.ALL, name="ALL", output_dir="results"):
     np.random.seed(seed)
