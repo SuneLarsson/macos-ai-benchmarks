@@ -16,7 +16,7 @@ def timeout_handler(signum, frame):
 
 def create_dummy_model_vector_matrix():
     # Massive 16384 inner product (268M MACs per iteration)
-    dim = 16384
+    dim = 32768
     input_features = [('input', datatypes.Array(dim))]
     output_features = [('output', datatypes.Array(dim))]
     builder = NeuralNetworkBuilder(input_features, output_features)
