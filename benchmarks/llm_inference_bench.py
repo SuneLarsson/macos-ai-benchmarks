@@ -4,6 +4,9 @@ import json
 import argparse
 import signal
 import sys
+import subprocess
+import threading
+import re
 import mlx.core as mx
 from mlx_lm import load
 try:
@@ -16,6 +19,75 @@ except ImportError:
 def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
     sys.exit(124)
+
+class PowerTracker:
+    def __init__(self):
+        self.process = None
+        self.power_samples = []
+        self._stop_event = threading.Event()
+        self._thread = None
+
+    def _read_output(self):
+        sudo_password = os.environ.get("SUDO_PASSWORD")
+        cmd = ["sudo"]
+        if sudo_password:
+            cmd.extend(["-S"])
+        else:
+            cmd.extend(["-n"])
+            
+        cmd.extend(["powermetrics", "-i", "100", "--samplers", "cpu_power,gpu_power,ane_power"])
+        
+        try:
+            self.process = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+            
+            if sudo_password and self.process.stdin:
+                self.process.stdin.write(sudo_password + "\n")
+                self.process.stdin.flush()
+                
+            combined_pattern = re.compile(r"Combined Power \(.*?\):\s+(\d+)\s+mW")
+            
+            while not self._stop_event.is_set():
+                line = self.process.stdout.readline()
+                if not line and self.process.poll() is not None:
+                    break
+                
+                m = combined_pattern.search(line)
+                if m:
+                    self.power_samples.append(float(m.group(1)))
+                    
+        except Exception as e:
+            print(f"PowerTracker error: {e}")
+            
+    def start(self):
+        self.power_samples = []
+        self._stop_event.clear()
+        self._thread = threading.Thread(target=self._read_output)
+        self._thread.daemon = True
+        self._thread.start()
+
+    def stop(self):
+        self._stop_event.set()
+        if self.process:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+                
+        if self._thread:
+            self._thread.join(timeout=2)
+            
+        if self.power_samples:
+            avg_mw = sum(self.power_samples) / len(self.power_samples)
+            return avg_mw / 1000.0  # Return Watts
+        return None
 
 # The exact four models explicitly cited in "Evaluating small quantized language models on apple silicon"
 # We utilize the 4-bit mlx-community quantized variants to ensure they fit in the 16GB Mac Mini unified memory,
@@ -61,6 +133,7 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
             pass
         mx.eval(model.parameters()) # ensure synchronization
         
+        power_tracker = PowerTracker()
         all_stats = []
         for i in range(iterations):
             current_seed = seed + i
@@ -70,6 +143,7 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
             first_token_time = None
             tokens_generated = 0
             
+            power_tracker.start()
             start_gen = time.perf_counter()
             
             # Iterate generation step natively to accurately timestamp First Token
@@ -85,6 +159,7 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
                     break
                     
             total_time = time.perf_counter() - start_gen
+            avg_power_w = power_tracker.stop()
             
             tps = tokens_generated / total_time
             ttft = first_token_time if first_token_time else total_time
@@ -97,6 +172,10 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
                 "tokens_generated": int(tokens_generated),
                 "tokens_per_second": float(tps)
             }
+            if avg_power_w is not None:
+                stats["average_power_w"] = float(avg_power_w)
+                stats["tokens_per_watt"] = float(tps / avg_power_w) if avg_power_w > 0 else 0.0
+                
             all_stats.append(stats)
             
             print(f"--- Iteration {i+1} Results ---")
