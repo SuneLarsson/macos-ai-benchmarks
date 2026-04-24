@@ -87,6 +87,13 @@ class PowerTracker:
         if self.power_samples:
             avg_mw = sum(self.power_samples) / len(self.power_samples)
             return avg_mw / 1000.0  # Return Watts
+        else:
+            if self.process and self.process.stderr:
+                err = self.process.stderr.read().strip()
+                if err:
+                    print(f"[PowerTracker] No samples collected! Error: {err}")
+                else:
+                    print(f"[PowerTracker] No samples collected, but no error was output from powermetrics. Regex may have failed.")
         return None
 
 # The exact four models explicitly cited in "Evaluating small quantized language models on apple silicon"

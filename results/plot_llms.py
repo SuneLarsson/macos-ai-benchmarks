@@ -11,20 +11,24 @@ def main():
         return
         
     df = pd.read_csv(csv_file)
+    
+    # Clean up any potential whitespace
+    df['Environment'] = df['Environment'].str.strip()
+    df['Model'] = df['Model'].str.strip()
+    
     models = df['Model'].unique().tolist()
     
-    # Map each model to a distinct shape (optional now that they are separate, but good for consistency)
-    markers = ['o', '^', 'D', 's', 'v', 'P', '*']
+    # Map each model to a distinct shape (4 models = 4 shapes)
+    markers = ['o', '^', 's', 'D', 'v', 'P', '*']
     model_marker_map = {m: markers[i % len(markers)] for i, m in enumerate(models)}
     
-    # Environments get different colors
-    color_map = {'exec': '#2ca02c', 'vm': '#d62728'} # Green and Red
+    # Environments get different colors (blue for exec, red for vm)
+    color_map = {'exec': 'blue', 'vm': 'red', 'linux': 'green'}
+    
+    plt.figure(figsize=(14, 8))
     
     for model in models:
-        # Create a fresh figure for this specific model
-        plt.figure(figsize=(10, 7))
-        
-        for env in ['exec', 'vm']:
+        for env in ['exec', 'vm', 'linux']:
             subset = df[(df['Model'] == model) & (df['Environment'] == env)]
             if subset.empty: 
                 continue
@@ -32,33 +36,35 @@ def main():
             plt.scatter(
                 subset['Time_To_First_Token_S'],
                 subset['Tokens_Per_Second'],
-                c=color_map[env],
+                c=color_map.get(env, 'gray'),
                 marker=model_marker_map[model],
                 s=150,               # marker size
                 alpha=0.75,          # transparency
                 edgecolors='black',  # black border
                 linewidths=1.5,
-                label=f"{env.upper()}"
+                label=f"{model} ({env.upper()})"
             )
             
-        plt.title(f"LLM Performance: {model}", fontsize=16, fontweight='bold')
-        plt.xlabel("Time to First Token (Seconds)  ← LOWER IS BETTER", fontsize=13)
-        plt.ylabel("Tokens Per Second  ↑ HIGHER IS BETTER", fontsize=13)
-        
-        plt.grid(True, linestyle='--', alpha=0.6)
-        
-        # Legend formatting
-        plt.legend(loc='upper right', fontsize=12)
-        plt.tight_layout()
-        
-        # Sanitize model name for the filename
-        safe_model_name = model.replace("/", "_").replace("\\", "_")
-        out_img = os.path.join(script_dir, f"llm_scatter_{safe_model_name}.png")
-        
-        plt.savefig(out_img, dpi=300, bbox_inches='tight')
-        plt.close() # Close the figure to prevent them from stacking up and saving over each other!
-        
-        print(f"Successfully generated graph: {out_img}")
+    plt.title("LLM Performance Comparison (All Models)", fontsize=18, fontweight='bold')
+    plt.xlabel("Time to First Token (Seconds)  ← LOWER IS BETTER", fontsize=14)
+    plt.ylabel("Tokens Per Second  ↑ HIGHER IS BETTER", fontsize=14)
+    
+    plt.grid(True, linestyle='--', alpha=0.6)
+    
+    # Start both axes at 0
+    plt.xlim(left=0)
+    plt.ylim(bottom=0)
+    
+    # Legend formatting
+    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=11)
+    plt.tight_layout()
+    
+    out_img = os.path.join(script_dir, "llm_scatter_all_models.png")
+    
+    plt.savefig(out_img, dpi=300, bbox_inches='tight')
+    plt.close() 
+    
+    print(f"Successfully generated combined graph: {out_img}")
 
 if __name__ == "__main__":
     main()
