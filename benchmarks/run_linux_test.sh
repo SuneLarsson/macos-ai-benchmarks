@@ -8,6 +8,8 @@ set -e
 BENCH_ARGS=""
 OUTPUT_DIR="results_linux"
 
+USE_NATIVE=false
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     --runs)
@@ -26,6 +28,10 @@ while [[ $# -gt 0 ]]; do
       BENCH_ARGS="$BENCH_ARGS --output-dir $2"
       OUTPUT_DIR="$2"
       shift 2
+      ;;
+    --native)
+      USE_NATIVE=true
+      shift 1
       ;;
     *)
       echo "Unknown argument: $1"
@@ -50,8 +56,22 @@ mkdir -p "$ABS_OUTPUT_DIR"
 export HF_HOME="/tmp/ai_bench_hf_cache"
 mkdir -p "$HF_HOME"
 
+# Bypass getpass.getuser() crashes on Kubernetes when running as an anonymous UID
+export TORCHINDUCTOR_CACHE_DIR="/tmp/torch_cache"
+export TRITON_CACHE_DIR="/tmp/triton_cache"
+mkdir -p "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"
+
+# Torchvision comes pre-installed broken on some PyTorch containers and crashes Transformers.
+# Since we only do text LLM inference, we can safely rip it out to unblock execution!
+pip uninstall -y torchvision > /dev/null 2>&1
+
 echo "=================================="
-echo "--- Running Dedicated Linux LLM Benchmark ---"
-python3 linux_inference.py $BENCH_ARGS
+if [ "$USE_NATIVE" = true ]; then
+    echo "--- Running Dedicated Linux LLM Benchmark (NATIVE UNQUANTIZED) ---"
+    python3 linux_inference_native.py $BENCH_ARGS
+else
+    echo "--- Running Dedicated Linux LLM Benchmark (4-BIT) ---"
+    python3 linux_inference.py $BENCH_ARGS
+fi
 
 echo "=== Linux Benchmark Suite Completed ==="
