@@ -27,6 +27,10 @@ while [[ $# -gt 0 ]]; do
       BENCH_ARGS="$BENCH_ARGS --timeout $2"
       shift 2
       ;;
+    --tokens)
+      BENCH_ARGS="$BENCH_ARGS --tokens $2"
+      shift 2
+      ;;
     --seed)
       BENCH_ARGS="$BENCH_ARGS --seed $2"
       shift 2

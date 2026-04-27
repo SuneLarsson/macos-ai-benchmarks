@@ -7,9 +7,16 @@ import sys
 import subprocess
 import threading
 import torch
+import warnings
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers import StoppingCriteria, StoppingCriteriaList
+import transformers
 import shutil
+import traceback
+
+# Suppress harmless warnings from bitsandbytes and transformers
+warnings.filterwarnings("ignore", category=FutureWarning)
+transformers.logging.set_verbosity_error()
 
 def timeout_handler(signum, frame):
     print("Timeout reached! Exiting.")
@@ -99,7 +106,7 @@ LINUX_MODELS = {
     "mlx-community/Mistral-7B-Instruct-v0.3-4bit": "mistralai/Mistral-7B-Instruct-v0.3"
 }
 
-def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
+def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_dir="results"):
     print(f"Starting Dedicated Linux LLM Inference Benchmark with base seed {seed}...")
     
     prompt = "Write a comprehensive 500 word essay on the history of computers:"
@@ -115,7 +122,9 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
             tokenizer = AutoTokenizer.from_pretrained(actual_model_id)
             model = AutoModelForCausalLM.from_pretrained(actual_model_id, quantization_config=quantization_config, device_map="auto")
         except Exception as e:
+            
             print(f"Failed to load {actual_model_id}: {e}")
+            traceback.print_exc()
             continue
             
         load_time = time.perf_counter() - start_load
@@ -138,7 +147,7 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
         
         for i in range(iterations):
             current_seed = seed + i
-            print(f"Executing benchmark generation {i+1}/{iterations} (seed {current_seed}, max 256 tokens)...")
+            print(f"Executing benchmark generation {i+1}/{iterations} (seed {current_seed}, exactly {tokens} tokens)...")
             
             torch.manual_seed(current_seed)
             ttft_tracker = TTFTTracker()
@@ -150,7 +159,8 @@ def benchmark_inference(iterations=1, seed=42, prefix="", output_dir="results"):
             with torch.no_grad():
                 output_ids = model.generate(
                     **model_inputs,
-                    max_new_tokens=256,
+                    min_new_tokens=tokens,
+                    max_new_tokens=tokens,
                     do_sample=True,
                     stopping_criteria=stopping_criteria,
                     pad_token_id=tokenizer.eos_token_id
@@ -211,6 +221,7 @@ if __name__ == "__main__":
     parser.add_argument('--timeout', type=int, default=0, help='Timeout in seconds')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
     parser.add_argument('--output-dir', type=str, default='results', help='Directory to save results')
+    parser.add_argument('--tokens', type=int, default=1024, help='Number of tokens to generate')
     args = parser.parse_args()
 
     if args.timeout > 0:
@@ -219,4 +230,4 @@ if __name__ == "__main__":
 
     target_runs = max(1, args.runs // 5)
     print(f"LLM Bench: Adjusted target runs from {args.runs} to {target_runs}")
-    benchmark_inference(iterations=target_runs, seed=args.seed, output_dir=args.output_dir)
+    benchmark_inference(iterations=target_runs, seed=args.seed, tokens=args.tokens, output_dir=args.output_dir)

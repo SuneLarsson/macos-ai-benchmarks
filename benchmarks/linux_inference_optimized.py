@@ -107,14 +107,14 @@ LINUX_MODELS = {
 }
 
 def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_dir="results"):
-    print(f"Starting NATIVE UNQUANTIZED Linux LLM Inference Benchmark with base seed {seed}...")
+    print(f"Starting OPTIMIZED NATIVE Linux LLM Inference Benchmark with base seed {seed}...")
     
     prompt = "Write a comprehensive 500 word essay on the history of computers:"
     
     for model_id in MODELS:
         print(f"\n=====================================")
         actual_model_id = LINUX_MODELS.get(model_id, model_id)
-        print(f"Evaluating Natively: {actual_model_id} (Requested mapping for: {model_id})")
+        print(f"Evaluating Optimized: {actual_model_id} (Requested mapping for: {model_id})")
         
         start_load = time.perf_counter()
         try:
@@ -125,6 +125,8 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
                 attn_implementation="sdpa",
                 device_map="cuda"
             )
+            print("Compiling model with torch.compile...")
+            model = torch.compile(model, mode="reduce-overhead")
         except Exception as e:
             print(f"Failed to load {actual_model_id}: {e}")
             traceback.print_exc()
@@ -139,7 +141,7 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
         else:
             text_prompt = prompt
             
-        print("Starting hardware warmup...")
+        print("Starting hardware warmup (This will trigger torch.compile and may take a few minutes)...")
         model_inputs = tokenizer(text_prompt, return_tensors="pt").to("cuda")
         with torch.no_grad():
             _ = model.generate(**model_inputs, max_new_tokens=2)
@@ -205,11 +207,11 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
         os.makedirs(output_dir, exist_ok=True)
         filename_prefix = f"{prefix}_" if prefix else ""
         safe_model_name = model_id.split("/")[-1]
-        filename = f"{output_dir}/{filename_prefix}llm_stats_{safe_model_name}_NATIVE.json"
+        filename = f"{output_dir}/{filename_prefix}llm_stats_{safe_model_name}_OPTIMIZED.json"
         
         with open(filename, "w") as f:
             json.dump({
-                "benchmark": "LLM Inference (Linux/CUDA) - Native bfloat16",
+                "benchmark": "LLM Inference (Linux/CUDA) - Optimized bfloat16",
                 "model": actual_model_id,
                 "load_time_s": float(load_time),
                 "target_iterations": iterations,

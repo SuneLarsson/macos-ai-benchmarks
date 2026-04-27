@@ -9,6 +9,8 @@ BENCH_ARGS=""
 OUTPUT_DIR="results_linux"
 
 USE_NATIVE=false
+USE_OPTIMIZED=false
+RUN_ALL=false
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -18,6 +20,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --timeout)
       BENCH_ARGS="$BENCH_ARGS --timeout $2"
+      shift 2
+      ;;
+    --tokens)
+      BENCH_ARGS="$BENCH_ARGS --tokens $2"
       shift 2
       ;;
     --seed)
@@ -31,6 +37,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --native)
       USE_NATIVE=true
+      shift 1
+      ;;
+    --optimized)
+      USE_OPTIMIZED=true
+      shift 1
+      ;;
+    --all)
+      RUN_ALL=true
       shift 1
       ;;
     *)
@@ -66,7 +80,17 @@ mkdir -p "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"
 pip uninstall -y torchvision > /dev/null 2>&1
 
 echo "=================================="
-if [ "$USE_NATIVE" = true ]; then
+if [ "$RUN_ALL" = true ]; then
+    echo "--- Running Dedicated Linux LLM Benchmark (4-BIT) ---"
+    python3 linux_inference.py $BENCH_ARGS
+    echo "--- Running Dedicated Linux LLM Benchmark (NATIVE UNQUANTIZED) ---"
+    python3 linux_inference_native.py $BENCH_ARGS
+    echo "--- Running Dedicated Linux LLM Benchmark (OPTIMIZED UNQUANTIZED) ---"
+    python3 linux_inference_optimized.py $BENCH_ARGS
+elif [ "$USE_OPTIMIZED" = true ]; then
+    echo "--- Running Dedicated Linux LLM Benchmark (OPTIMIZED UNQUANTIZED) ---"
+    python3 linux_inference_optimized.py $BENCH_ARGS
+elif [ "$USE_NATIVE" = true ]; then
     echo "--- Running Dedicated Linux LLM Benchmark (NATIVE UNQUANTIZED) ---"
     python3 linux_inference_native.py $BENCH_ARGS
 else
