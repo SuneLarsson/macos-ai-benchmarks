@@ -21,8 +21,8 @@ def main():
         print("No llm_stats_*.json files found.")
         return
         
-    # Dictionary structure: data[model_name][environment] = {'power': [], 'tpw': []}
-    data = defaultdict(lambda: defaultdict(lambda: {'power': [], 'tpw': []}))
+    # Dictionary structure: data[model_name][environment] = {'power': [], 'tpw': [], 'tps': []}
+    data = defaultdict(lambda: defaultdict(lambda: {'power': [], 'tpw': [], 'tps': []}))
     
     for file_path in json_files:
         # Ignore any files inside a directory named 'old'
@@ -37,7 +37,9 @@ def main():
         if "exec" in dir_name.lower():
             env_name = "Mac"
         elif "linux" in dir_name.lower():
-            if "_NATIVE" in filename:
+            if "_OPTIMIZED" in filename:
+                env_name = "Linux Optimized"
+            elif "_NATIVE" in filename:
                 env_name = "Linux Native"
             else:
                 env_name = "Linux 4-bit"
@@ -51,7 +53,7 @@ def main():
                     # Clean up model name
                     model_name = content.get("model", filename)
                     model_name = model_name.split("/")[-1] # Remove prefix
-                    model_name = model_name.replace("-Instruct", "").replace("-4bit", "").replace("_NATIVE.json", "").replace(".json", "")
+                    model_name = model_name.replace("-Instruct", "").replace("-4bit", "").replace("_OPTIMIZED.json", "").replace("_NATIVE.json", "").replace(".json", "")
                     if model_name.startswith("llm_stats_"):
                         model_name = model_name.replace("llm_stats_", "")
                     
@@ -59,10 +61,12 @@ def main():
                     for run in runs:
                         power = run.get("average_power_w", None)
                         tpw = run.get("tokens_per_watt", None)
+                        tps = run.get("tokens_per_second", None)
                         
-                        if power is not None and tpw is not None:
+                        if power is not None and tpw is not None and tps is not None:
                             data[model_name][env_name]['power'].append(float(power))
                             data[model_name][env_name]['tpw'].append(float(tpw))
+                            data[model_name][env_name]['tps'].append(float(tps))
                             
             except Exception as e:
                 print(f"Failed to parse {file_path}: {e}")
@@ -75,7 +79,7 @@ def main():
     out_file = os.path.join(script_dir, "llm_power_metrics_table.tex")
     
     # Define the order we want to display environments
-    env_order = ["Mac", "Linux 4-bit", "Linux Native"]
+    env_order = ["Mac", "Linux 4-bit", "Linux Native", "Linux Optimized"]
     
     models = sorted(data.keys())
     
@@ -83,9 +87,9 @@ def main():
         f.write("% Add to your preamble: \\usepackage{multirow}\n")
         f.write("\\begin{table}[hbt!]\n")
         f.write("\\centering\n")
-        f.write("\\begin{tabular}{|l|l|c|c|c|c|}\n")
+        f.write("\\begin{tabular}{|l|l|c|c|c|}\n")
         f.write("\\hline\n")
-        f.write("\\textbf{Model} & \\textbf{Environment} & \\textbf{Avg Power (W)} & \\textbf{Std Dev (W)} & \\textbf{Avg TPW} & \\textbf{Std Dev (TPW)} \\\\\n")
+        f.write("\\textbf{Model} & \\textbf{Environment} & \\textbf{Avg TPS} & \\textbf{Avg Power (W)} & \\textbf{Avg TPW} \\\\\n")
         f.write("\\hline\n")
         
         for model in models:
@@ -99,29 +103,28 @@ def main():
             for i, env in enumerate(envs_present):
                 power_vals = data[model][env]['power']
                 tpw_vals = data[model][env]['tpw']
+                tps_vals = data[model][env]['tps']
                 
-                if len(power_vals) > 1:
+                if len(power_vals) >= 1:
+                    tps_mean = f"{statistics.mean(tps_vals):.2f}"
                     p_mean = f"{statistics.mean(power_vals):.2f}"
-                    p_std = f"{statistics.stdev(power_vals):.2f}"
                     t_mean = f"{statistics.mean(tpw_vals):.4f}"
-                    t_std = f"{statistics.stdev(tpw_vals):.4f}"
                 else:
-                    p_mean = f"{power_vals[0]:.2f}"
-                    p_std = "-"
-                    t_mean = f"{tpw_vals[0]:.4f}"
-                    t_std = "-"
+                    tps_mean = "-"
+                    p_mean = "-"
+                    t_mean = "-"
                     
                 if i == 0:
                     model_col = f"\\multirow{{{num_envs}}}{{*}}{{{safe_model}}}"
                 else:
                     model_col = ""
                     
-                f.write(f"{model_col} & {env} & {p_mean} & {p_std} & {t_mean} & {t_std} \\\\\n")
+                f.write(f"{model_col} & {env} & {tps_mean} & {p_mean} & {t_mean} \\\\\n")
                 
             f.write("\\hline\n")
             
         f.write("\\end{tabular}\n")
-        f.write("\\caption{LLM Efficiency Comparison: Mac vs Linux 4-bit vs Linux Native}\n")
+        f.write("\\caption{LLM Efficiency Comparison: Mac vs Linux 4-bit vs Linux Native vs Linux Optimized}\n")
         f.write("\\label{tab:llm_power_comparison}\n")
         f.write("\\end{table}\n")
         

@@ -204,7 +204,16 @@ def benchmark_inference(iterations=1, seed=42, tokens=256, prefix="", output_dir
         if use_cuda:
             model_inputs = tokenizer(text_prompt, return_tensors="pt").to("cuda")
             with torch.no_grad():
-                _ = model.generate(**model_inputs, max_new_tokens=2)
+                dummy_tracker = TTFTTracker()
+                dummy_stopping_criteria = StoppingCriteriaList([dummy_tracker])
+                _ = model.generate(
+                    **model_inputs,
+                    min_new_tokens=10,
+                    max_new_tokens=10,
+                    do_sample=True,
+                    stopping_criteria=dummy_stopping_criteria,
+                    pad_token_id=tokenizer.eos_token_id
+                )
             torch.cuda.synchronize()
         else:
             prompt_tokens = mx.array(tokenizer.encode(text_prompt))
@@ -252,7 +261,13 @@ def benchmark_inference(iterations=1, seed=42, tokens=256, prefix="", output_dir
                 mx.random.seed(current_seed)
                 start_gen = time.perf_counter()
                 
-                for token, _ in mlx_generate_step(prompt_tokens, model):
+                try:
+                    gen_iterator = mlx_generate_step(prompt_tokens, model, max_tokens=tokens)
+                except TypeError:
+                    # older mlx-lm versions might not accept max_tokens in generate_step
+                    gen_iterator = mlx_generate_step(prompt_tokens, model)
+                    
+                for token, _ in gen_iterator:
                     mx.eval(token)
                     
                     if first_token_time is None:

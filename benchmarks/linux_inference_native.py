@@ -142,7 +142,16 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
         print("Starting hardware warmup...")
         model_inputs = tokenizer(text_prompt, return_tensors="pt").to("cuda")
         with torch.no_grad():
-            _ = model.generate(**model_inputs, max_new_tokens=2)
+            dummy_tracker = TTFTTracker()
+            dummy_stopping_criteria = StoppingCriteriaList([dummy_tracker])
+            _ = model.generate(
+                **model_inputs,
+                min_new_tokens=10,
+                max_new_tokens=10,
+                do_sample=True,
+                stopping_criteria=dummy_stopping_criteria,
+                pad_token_id=tokenizer.eos_token_id
+            )
         torch.cuda.synchronize()
             
         power_tracker = PowerTracker()

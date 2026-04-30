@@ -6,6 +6,8 @@ import signal
 import sys
 import subprocess
 import threading
+import getpass
+getpass.getuser = lambda: 'anonymous'
 import torch
 import warnings
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -13,6 +15,10 @@ from transformers import StoppingCriteria, StoppingCriteriaList
 import transformers
 import shutil
 import traceback
+import gc
+import torch._dynamo as dynamo
+
+
 
 # Suppress harmless warnings from transformers
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -111,7 +117,27 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
     
     prompt = "Write a comprehensive 500 word essay on the history of computers:"
     
+    model = None
+    tokenizer = None
     for model_id in MODELS:
+        if model is not None:
+            del model
+            model = None
+        if tokenizer is not None:
+            del tokenizer
+            tokenizer = None
+            
+        gc.collect()
+        torch.cuda.empty_cache()
+        
+        try:
+            dynamo.reset()
+        except ImportError:
+            pass
+            
+        if hasattr(torch.compiler, 'reset'):
+            torch.compiler.reset()
+
         print(f"\n=====================================")
         actual_model_id = LINUX_MODELS.get(model_id, model_id)
         print(f"Evaluating Optimized: {actual_model_id} (Requested mapping for: {model_id})")
@@ -144,7 +170,16 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
         print("Starting hardware warmup (This will trigger torch.compile and may take a few minutes)...")
         model_inputs = tokenizer(text_prompt, return_tensors="pt").to("cuda")
         with torch.no_grad():
-            _ = model.generate(**model_inputs, max_new_tokens=2)
+            dummy_tracker = TTFTTracker()
+            dummy_stopping_criteria = StoppingCriteriaList([dummy_tracker])
+            _ = model.generate(
+                **model_inputs,
+                min_new_tokens=10,
+                max_new_tokens=10,
+                do_sample=True,
+                stopping_criteria=dummy_stopping_criteria,
+                pad_token_id=tokenizer.eos_token_id
+            )
         torch.cuda.synchronize()
             
         power_tracker = PowerTracker()

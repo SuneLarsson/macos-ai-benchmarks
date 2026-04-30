@@ -75,10 +75,6 @@ export TORCHINDUCTOR_CACHE_DIR="/tmp/torch_cache"
 export TRITON_CACHE_DIR="/tmp/triton_cache"
 mkdir -p "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"
 
-# Torchvision comes pre-installed broken on some PyTorch containers and crashes Transformers.
-# Since we only do text LLM inference, we can safely rip it out to unblock execution!
-pip uninstall -y torchvision > /dev/null 2>&1
-
 echo "=================================="
 if [ "$RUN_ALL" = true ]; then
     echo "--- Running Dedicated Linux LLM Benchmark (4-BIT) ---"
