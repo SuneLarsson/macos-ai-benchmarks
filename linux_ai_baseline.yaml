@@ -1,33 +1,41 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: linux-ai-pytorch-baseline
-  namespace: proj-name
+  name: linux-fio-benchmark
+  namespace: default
 spec:
   backoffLimit: 0
   template:
     spec:
       restartPolicy: Never
+      imagePullSecrets:
+      - name: macos-robot-secret
       containers:
-      - name: linux-ai
-        # Use the custom pre-built image from benchmarks/Dockerfile.linux
-        # Replace <your-registry> with your actual Docker registry (e.g. ghcr.io, docker.io)
-        image: <your-registry>/linux-ai-baseline:latest
+      - name: linux-llm
+        image: placeholder
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "4"
+            memory: "16Gi"
+            nvidia.com/gpu: "1"
         command:
           - "/bin/bash"
           - "-c"
           - |
-            TARGET_DIR="/proj/proj-name"
-            SCRIPT_DIR="$TARGET_DIR/benchmark_scripts"
-            
-            # Make the unified runner executable and run it
-            chmod +x "$SCRIPT_DIR/run_ai_suite.sh"
-            bash "$SCRIPT_DIR/run_ai_suite.sh"
+            CEPH_DIR="/data/shared"
+            SCRIPT_DIR="$CEPH_DIR/benchmarks"
+            OUTPUT_DIR="$CEPH_DIR/results_linux"
+
+            bash "$SCRIPT_DIR/run_ai_suite.sh" --runs 1000 --output-dir "$OUTPUT_DIR" --seed 8 --test "llm" 2>&1 | tee "$CEPH_DIR/benchmark.log"
         volumeMounts:
         - name: project-storage
-          mountPath: /proj/proj-name
+          mountPath: /data/shared
+        - name: tmp-volume
+          mountPath: /tmp
       volumes:
       - name: project-storage
         persistentVolumeClaim:
-          claimName: csi-cephfs-proj-name
+          claimName: your-pvc-name
+      - name: tmp-volume
+        emptyDir: {}

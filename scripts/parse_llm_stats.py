@@ -37,10 +37,25 @@ def main():
         if "old" in file_path.lower().split(os.sep):
             continue
             
-        env_name = os.path.basename(os.path.dirname(file_path)) # e.g. "vm" or "exec"
-        if env_name.startswith("results_"):
-            env_name = env_name.replace("results_", "")
-        if env_name not in ['exec', 'vm', 'linux']:
+        filename = os.path.basename(file_path)
+        base_env = os.path.basename(os.path.dirname(file_path)) # e.g. "vm" or "exec"
+        if base_env.startswith("results_"):
+            base_env = base_env.replace("results_", "")
+            
+        env_name = "unknown"
+        if "exec" in base_env:
+            env_name = "exec"
+        elif "vm" in base_env:
+            env_name = "vm"
+        elif "linux" in base_env:
+            if "_OPTIMIZED" in filename:
+                env_name = "linux_optimized"
+            elif "_NATIVE" in filename:
+                env_name = "linux_native"
+            else:
+                env_name = "linux_4bit"
+                
+        if env_name == "unknown":
             continue
         
         with open(file_path, 'r') as f:
@@ -48,9 +63,11 @@ def main():
                 data = json.load(f)
                 if isinstance(data, dict) and "runs" in data:
                     # Clean up model name
-                    model_name = data.get("model", os.path.basename(file_path))
-                    model_name = model_name.split("/")[-1] # Remove mlx-community/ prefix if it exists
-                    model_name = model_name.replace("-Instruct", "").replace("-4bit", "")
+                    model_name = data.get("model", filename)
+                    model_name = model_name.split("/")[-1] # Remove prefix
+                    model_name = model_name.replace("-Instruct", "").replace("-4bit", "").replace("_OPTIMIZED.json", "").replace("_NATIVE.json", "").replace(".json", "")
+                    if model_name.startswith("llm_stats_"):
+                        model_name = model_name.replace("llm_stats_", "")
                     runs = data["runs"]
                     
                     for idx, run in enumerate(runs):
@@ -108,9 +125,11 @@ def main():
     models = sorted(coords_by_model_env.keys())
     
     env_styles = {
-        'exec': {'label': 'User-space', 'color': 'blue!60', 'mark': '*'},
-        'vm': {'label': 'Virtualization', 'color': 'red!60', 'mark': 'triangle*'},
-        'linux': {'label': 'Linux', 'color': 'green!60', 'mark': 'square*'}
+        'exec': {'label': 'Mac User-space', 'color': 'blue!60', 'mark': '*'},
+        'vm': {'label': 'Mac Virtualization', 'color': 'red!60', 'mark': 'triangle*'},
+        'linux_4bit': {'label': 'H100 4-bit (Direct)', 'color': 'green!60', 'mark': 'square*'},
+        'linux_native': {'label': 'H100 16-bit (Native)', 'color': 'orange!60', 'mark': 'diamond*'},
+        'linux_optimized': {'label': 'H100 16-bit (Compiled)', 'color': 'purple!60', 'mark': 'pentagon*'}
     }
 
     # 1. Individual Performance Plots
@@ -138,7 +157,7 @@ def main():
             f.write("    ymin=0,\n")
             f.write("]\n")
             
-            for env in ['exec', 'vm', 'linux']:
+            for env in ['exec', 'vm', 'linux_4bit', 'linux_native', 'linux_optimized']:
                 if env not in envs: continue
                 coords = [f"({pt['ttft']},{pt['tps']})" for pt in envs[env] if pt['ttft'] != "" and pt['tps'] != ""]
                 if coords:
@@ -167,7 +186,7 @@ def main():
             
             # Find which envs actually have power data
             valid_envs = []
-            for env in ['exec', 'vm', 'linux']:
+            for env in ['exec', 'vm', 'linux_4bit', 'linux_native', 'linux_optimized']:
                 if env in envs:
                     pts = envs[env]
                     power_vals = [float(pt['power']) for pt in pts if pt['power'] != ""]
@@ -211,8 +230,8 @@ def main():
     # 3. Composite Plots setup
     markers = ['*', 'triangle*', 'square*', 'diamond*', 'pentagon*', 'x', '+']
     model_marker_map = {m: markers[i % len(markers)] for i, m in enumerate(models)}
-    env_color_map = {'exec': 'blue', 'vm': 'red', 'linux': 'green'}
-    env_label_map = {'exec': 'User-space', 'vm': 'Virtualization', 'linux': 'Linux'}
+    env_color_map = {'exec': 'blue', 'vm': 'red', 'linux_4bit': 'green', 'linux_native': 'orange', 'linux_optimized': 'purple'}
+    env_label_map = {'exec': 'Mac User-space', 'vm': 'Mac Virtualization', 'linux_4bit': 'H100 4-bit (Direct)', 'linux_native': 'H100 16-bit (Native)', 'linux_optimized': 'H100 16-bit (Compiled)'}
     
     # 4. Composite Performance Plot
     perf_comp_file = os.path.join(script_dir, "llm_latex_performance_composite.tex")
@@ -242,14 +261,14 @@ def main():
         
         for model in models:
             envs = coords_by_model_env[model]
-            for env in ['exec', 'vm', 'linux']:
+            for env in ['exec', 'vm', 'linux_4bit', 'linux_native', 'linux_optimized']:
                 if env not in envs: continue
                 coords = [f"({pt['ttft']},{pt['tps']})" for pt in envs[env] if pt['ttft'] != "" and pt['tps'] != ""]
                 if coords:
                     f.write(f"\\addplot[\n    only marks,\n    mark size=3pt,\n    mark={model_marker_map[model]},\n    color={env_color_map[env]}!60\n] coordinates {{\n    {' '.join(coords)}\n}};\n")
         
         f.write("\\end{axis}\n\\end{tikzpicture}\n")
-        f.write("\\caption{Composite Time to First Token vs Tokens Per Second. Environments: User-space (Blue), Virtualization (Red).}\n")
+        f.write("\\caption{Composite Time to First Token vs Tokens Per Second. Environments: Mac (Blue/Red), H100 4-bit (Green), H100 Native (Orange), H100 Compiled (Purple).}\n")
         f.write("\\end{figure}\n\n")
 
     # 5. Simple Text Report for Mean TTFT and TPS
@@ -272,7 +291,7 @@ def main():
                     exec_ttft = statistics.mean(ttft_vals)
                     exec_tps = statistics.mean(tps_vals)
                     
-            for env in ['exec', 'vm', 'linux']:
+            for env in ['exec', 'vm', 'linux_4bit', 'linux_native', 'linux_optimized']:
                 if env in envs:
                     pts = envs[env]
                     ttft_vals = [float(pt['ttft']) for pt in pts if pt['ttft'] != ""]

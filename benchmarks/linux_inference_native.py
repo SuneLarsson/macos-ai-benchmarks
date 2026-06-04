@@ -144,6 +144,7 @@ def benchmark_inference(iterations=1, seed=42, tokens=1024, prefix="", output_di
         with torch.no_grad():
             dummy_tracker = TTFTTracker()
             dummy_stopping_criteria = StoppingCriteriaList([dummy_tracker])
+            dummy_tracker.reset()
             _ = model.generate(
                 **model_inputs,
                 min_new_tokens=10,

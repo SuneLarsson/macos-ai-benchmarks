@@ -78,7 +78,7 @@ def main():
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_pattern = f"fio_*benchmark_result_*{args.date}*.txt" if args.date else "fio_*benchmark_result_*.txt"
+    file_pattern = f"fio_*result*{args.date}*.txt" if args.date else "fio_*result*.txt"
     search_pattern = os.path.join(script_dir, "**", file_pattern)
     txt_files = glob.glob(search_pattern, recursive=True)
 
@@ -90,8 +90,10 @@ def main():
     
     for file_path in txt_files:
         filename = os.path.basename(file_path)
-        if 'fio_vm_benchmark_result' in filename:
+        if 'fio_vm_' in filename:
             env = 'vm'
+        elif 'native_ceph' in filename:
+            env = 'native_ceph'
         else:
             env = 'exec'
             
@@ -150,7 +152,13 @@ def main():
             safe_test = test.replace('_', '\\_').replace('%', '\\%').replace('&', '\\&')
             
             for i, env in enumerate(envs):
-                env_label = "Virtualization" if env == "vm" else "User-space"
+                if env == "vm":
+                    env_label = "Virtualization"
+                elif env == "native_ceph":
+                    env_label = "Native Ceph"
+                else:
+                    env_label = "User-space"
+                    
                 iops = env_data[env]['IOPS']
                 bw = env_data[env]['BW']
                 lat = env_data[env]['AvgLat_ms']

@@ -38,11 +38,11 @@ def main():
             env_name = "Mac"
         elif "linux" in dir_name.lower():
             if "_OPTIMIZED" in filename:
-                env_name = "Linux Optimized"
+                env_name = "H100 16-bit (Compiled)"
             elif "_NATIVE" in filename:
-                env_name = "Linux Native"
+                env_name = "H100 16-bit (Native)"
             else:
-                env_name = "Linux 4-bit"
+                env_name = "H100 4-bit (Direct)"
         else:
             continue # Skip unknown environments like 'vm' unless requested
             
@@ -79,7 +79,7 @@ def main():
     out_file = os.path.join(script_dir, "llm_power_metrics_table.tex")
     
     # Define the order we want to display environments
-    env_order = ["Mac", "Linux 4-bit", "Linux Native", "Linux Optimized"]
+    env_order = ["Mac", "H100 4-bit (Direct)", "H100 16-bit (Native)", "H100 16-bit (Compiled)"]
     
     models = sorted(data.keys())
     
@@ -124,7 +124,7 @@ def main():
             f.write("\\hline\n")
             
         f.write("\\end{tabular}\n")
-        f.write("\\caption{LLM Efficiency Comparison: Mac vs Linux 4-bit vs Linux Native vs Linux Optimized}\n")
+        f.write("\\caption{LLM Efficiency Comparison: Mac vs H100 (4-bit, Native, Compiled)}\n")
         f.write("\\label{tab:llm_power_comparison}\n")
         f.write("\\end{table}\n")
         
